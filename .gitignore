@@ -1,0 +1,8 @@
+*.class
+*.iml
+*.rar
+*.zip
+.idea/
+out/
+target/
+web/target/*
