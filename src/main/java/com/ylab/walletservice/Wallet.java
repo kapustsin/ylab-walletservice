@@ -6,10 +6,16 @@ import com.ylab.walletservice.presentation.in.ConsoleProcessor;
 import com.ylab.walletservice.service.PlayerService;
 import com.ylab.walletservice.service.TransactionService;
 
-import java.io.IOException;
-
+/**
+ * Main class representing the entry point of the Wallet application.
+ */
 public class Wallet {
-    public static void main(String[] args) throws IOException {
+    /**
+     * Main method to start the Wallet application and initiate the console interface for user interaction.
+     *
+     * @param args Command line arguments (not used in this application).
+     */
+    public static void main(String[] args) {
         ConsoleProcessor processor = new ConsoleProcessor(new PlayerService(new InMemoryPlayerRepository()),
                 new TransactionService(new InMemoryTransactionRepository()));
         processor.start();

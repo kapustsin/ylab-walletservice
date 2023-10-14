@@ -20,9 +20,13 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     }
 
     @Override
-    public long create(String login, String password) {
-        long id = players.size() + 1;
-        players.put(login, new Player(id, login, password));
-        return id;
+    public long create(Player player) {
+        players.put(player.getLogin(), player);
+        return player.getId();
+    }
+
+    @Override
+    public long getPlayersSize() {
+        return players.size();
     }
 }

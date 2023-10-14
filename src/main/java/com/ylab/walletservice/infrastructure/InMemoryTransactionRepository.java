@@ -20,9 +20,8 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     }
 
     @Override
-    public Transaction create(long id, long creatorId, int amount, String type) {
-        Transaction transaction = new Transaction(id, creatorId, amount, type);
-        transactions.put(id, transaction);
+    public Transaction create(Transaction transaction) {
+        transactions.put(transaction.getId(), transaction);
         return transaction;
     }
 

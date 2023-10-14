@@ -1,12 +1,17 @@
 package com.ylab.walletservice.domain;
 
+import java.math.BigDecimal;
+
+/**
+ * Represents a transaction entity with unique ID, creator ID, amount, and type.
+ */
 public class Transaction {
     long id;
     long creatorId;
-    int amount;
+    BigDecimal amount;
     String type;
 
-    public Transaction(long id, long creatorId, int amount, String type) {
+    public Transaction(long id, long creatorId, BigDecimal amount, String type) {
         this.id = id;
         this.creatorId = creatorId;
         this.amount = amount;
@@ -29,11 +34,11 @@ public class Transaction {
         this.creatorId = creatorId;
     }
 
-    public int getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
