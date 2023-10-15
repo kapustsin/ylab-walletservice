@@ -1,8 +1,8 @@
 package com.ylab.walletservice;
 
-import com.ylab.walletservice.infrastructure.InMemoryPlayerRepository;
-import com.ylab.walletservice.infrastructure.InMemoryTransactionRepository;
 import com.ylab.walletservice.presentation.in.ConsoleProcessor;
+import com.ylab.walletservice.repository.impl.JdbcPlayerRepository;
+import com.ylab.walletservice.repository.impl.JdbcTransactionRepository;
 import com.ylab.walletservice.service.PlayerService;
 import com.ylab.walletservice.service.TransactionService;
 
@@ -16,8 +16,8 @@ public class Wallet {
      * @param args Command line arguments (not used in this application).
      */
     public static void main(String[] args) {
-        ConsoleProcessor processor = new ConsoleProcessor(new PlayerService(new InMemoryPlayerRepository()),
-                new TransactionService(new InMemoryTransactionRepository()));
+        ConsoleProcessor processor = new ConsoleProcessor(new PlayerService(new JdbcPlayerRepository()),
+                new TransactionService(new JdbcTransactionRepository(), new PlayerService(new JdbcPlayerRepository())));
         processor.start();
     }
 }

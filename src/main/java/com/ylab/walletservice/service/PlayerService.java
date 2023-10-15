@@ -1,12 +1,10 @@
 package com.ylab.walletservice.service;
 
 import com.ylab.walletservice.domain.Player;
-import com.ylab.walletservice.domain.repository.PlayerRepository;
+import com.ylab.walletservice.repository.PlayerRepository;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-
-import static java.util.Objects.isNull;
 
 /**
  * Service class for managing player operations such as registration, authorization, and balance retrieval.
@@ -31,13 +29,13 @@ public class PlayerService {
      * @return true if registration is successful, false otherwise.
      */
     public boolean create(String login, String password) {
-        if (!playerRepository.exists(login)) {
-            Player player = new Player(generatePlayerId(), login, password);
+        if (playerRepository.get(login).isEmpty()) {
+            Player player = new Player(login, password);
             playerRepository.create(player);
-            LogService.add("New user creation. Success.");
+            LogService.add("New player creation. Success.");
             return true;
         } else {
-            LogService.add("New user creation. Error.");
+            LogService.add("New player creation. Error.");
             return false;
         }
     }
@@ -50,12 +48,12 @@ public class PlayerService {
      * @return An Optional containing the authorized Player object if successful, or empty otherwise.
      */
     public Optional<Player> doAuthorisation(String username, String password) {
-        Player player = playerRepository.get(username);
-        if (!isNull(player) && (player.getPassword().equals(password))) {
-            LogService.add("User with login " + username + "success authorization.");
-            return Optional.of(player);
+        Optional<Player> player = playerRepository.get(username);
+        if (player.isPresent() && (player.get().getPassword().equals(password))) {
+            LogService.add("Player with login " + username + "success authorization.");
+            return player;
         } else {
-            LogService.add("User with login " + username + " authorization failed.");
+            LogService.add("Player with login " + username + " authorization failed.");
             return Optional.empty();
         }
     }
@@ -67,16 +65,24 @@ public class PlayerService {
      * @return The balance of the player.
      */
     public BigDecimal getBalance(String login) {
-        return playerRepository.get(login).getBalance();
+        Optional<Player> player = playerRepository.get(login);
+        if (player.isPresent()) {
+            return player.get().getBalance();
+        } else {
+            String message = "Player with login " + login + " authorization failed.";
+            LogService.add(message);
+            throw new RuntimeException(message);
+        }
     }
 
     /**
-     * Generates a unique player ID for new transactions.
+     * Sets the balance for the player with the specified ID.
      *
-     * @return The generated unique player ID.
+     * @param id      The ID of the player.
+     * @param balance The new balance to be set for the player.
+     * @throws RuntimeException If there is an error updating the balance in the database.
      */
-    private long generatePlayerId() {
-        LogService.add("New player id generated.");
-        return playerRepository.getPlayersSize() + 1;
+    public void setBalance(long id, BigDecimal balance) {
+        playerRepository.updateBalance(id, balance);
     }
 }

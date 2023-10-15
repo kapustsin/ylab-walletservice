@@ -49,15 +49,17 @@ public class ConsoleProcessor {
                 if (player.isPresent()) {
                     doWork(player.get());
                 } else {
-                    System.out.println("Registration failed!");
+                    System.out.println("Authorization error. Exit.");
                 }
+            } else {
+                System.out.println("Registration failed : login exists. Exit.");
             }
         } else if (i == 2) {
             Optional<Player> player = doAuthorisation();
             if (player.isPresent()) {
                 doWork(player.get());
             } else {
-                System.out.println("Authorization error, exit.");
+                System.out.println("Authorization error. Exit.");
             }
         }
     }
@@ -135,11 +137,16 @@ public class ConsoleProcessor {
                     break;
                 case 4:
                     System.out.println("History:");
-                    List<Transaction> history = transactionService.getHistory();
-                    for (Transaction transaction : history) {
-                        System.out.println(
-                                "id=" + transaction.getId() + " ,amount = " + transaction.getAmount() + " ,type = " +
-                                        transaction.getType());
+                    List<Transaction> history = transactionService.getHistory(player.getId());
+                    if (!history.isEmpty()) {
+                        for (Transaction transaction : history) {
+                            System.out.println(
+                                    "id=" + transaction.getId() + " ,amount = " + transaction.getAmount() +
+                                            " ,type = " +
+                                            transaction.getType());
+                        }
+                    } else {
+                        System.out.println("No records.");
                     }
                     break;
             }

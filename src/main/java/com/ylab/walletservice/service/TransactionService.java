@@ -2,12 +2,11 @@ package com.ylab.walletservice.service;
 
 import com.ylab.walletservice.domain.Player;
 import com.ylab.walletservice.domain.Transaction;
-import com.ylab.walletservice.domain.repository.TransactionRepository;
-import com.ylab.walletservice.infrastructure.InMemoryPlayerRepository;
+import com.ylab.walletservice.repository.TransactionRepository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Service class for managing transaction operations such as creating transactions and retrieving transaction history.
@@ -15,16 +14,15 @@ import java.util.List;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final PlayerService playerService;
-    private final List<Transaction> history = new ArrayList<>();
 
     /**
      * Constructs a TransactionService object with the specified TransactionRepository instance.
      *
      * @param transactionRepository The repository used for transaction-related data access.
      */
-    public TransactionService(TransactionRepository transactionRepository) {
-        this.playerService = new PlayerService(new InMemoryPlayerRepository());
+    public TransactionService(TransactionRepository transactionRepository, PlayerService playerService) {
         this.transactionRepository = transactionRepository;
+        this.playerService = playerService;
     }
 
     /**
@@ -36,25 +34,25 @@ public class TransactionService {
      * @return true if the transaction is successful, false otherwise.
      */
     public boolean create(Player player, BigDecimal amount, String type) {
-        long id = generateTransactionId();
-        if (isTransactionIdUnique(id)) {
+        long token = generateTransactionToken();
+        if (isTransactionTokenUnique(token)) {
             if ("debit".equals(type) && checkDebit(player.getLogin(), amount)) {
-                history.add(transactionRepository.create(new Transaction(id, player.getId(), amount, type)));
-                player.setBalance(player.getBalance().subtract(amount));
+                long id = transactionRepository.create(new Transaction(token, player.getId(), amount, type));
+                playerService.setBalance(player.getId(), playerService.getBalance(player.getLogin()).subtract(amount));
                 LogService.add("Debit transaction success. Id = " + id);
                 return true;
             } else if ("credit".equals(type)) {
-                Transaction transaction = new Transaction(id, player.getId(), amount, type);
-                history.add(transaction);
-                player.setBalance(player.getBalance().add(amount));
+                long id = transactionRepository.create(new Transaction(token, player.getId(), amount, type));
+                playerService.setBalance(player.getId(), playerService.getBalance(player.getLogin()).add(amount));
                 LogService.add("Credit transaction success. Id = " + id);
                 return true;
             } else {
-                LogService.add("Create transaction failed. Id = " + id + ", type = " + type);
+                LogService.add("Create transaction failed. Token = " + token + ", player id = " + player.getId() +
+                        ", amount = " + amount + ", type = " + type);
                 return false;
             }
         } else {
-            LogService.add("Create transaction failed. Id = " + id + "not unique.");
+            LogService.add("Create transaction failed. Token = " + token + " not unique.");
             return false;
         }
     }
@@ -62,11 +60,12 @@ public class TransactionService {
     /**
      * Retrieves the transaction history.
      *
+     * @param playerId The ID of the player.
      * @return The list of transaction history.
      */
-    public List<Transaction> getHistory() {
+    public List<Transaction> getHistory(long playerId) {
         LogService.add("User get transaction history");
-        return history;
+        return transactionRepository.getHistory(playerId);
     }
 
     /**
@@ -83,13 +82,14 @@ public class TransactionService {
     }
 
     /**
-     * Generates a unique transaction ID for new transactions.
+     * Generates a unique transaction token for new transactions.
      *
-     * @return The generated unique transaction ID.
+     * @return The generated token.
      */
-    private long generateTransactionId() {
-        LogService.add("New transaction id generated.");
-        return transactionRepository.getTransactionsSize() + 1;
+    private long generateTransactionToken() {
+        LogService.add("New transaction token generated.");
+        Random random = new Random();
+        return Math.abs(random.nextLong());
     }
 
     /**
@@ -98,8 +98,8 @@ public class TransactionService {
      * @param id The transaction ID to check.
      * @return true if the ID is unique, false otherwise.
      */
-    private boolean isTransactionIdUnique(long id) {
+    private boolean isTransactionTokenUnique(long id) {
         LogService.add("Check transaction unique id.");
-        return !transactionRepository.exists(id);
+        return transactionRepository.isTransactionTokenUnique(id);
     }
 }

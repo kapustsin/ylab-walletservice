@@ -7,12 +7,21 @@ import java.math.BigDecimal;
  */
 public class Transaction {
     long id;
+    long token;
     long creatorId;
     BigDecimal amount;
     String type;
 
-    public Transaction(long id, long creatorId, BigDecimal amount, String type) {
+    public Transaction(long id, long token, long creatorId, BigDecimal amount, String type) {
         this.id = id;
+        this.token = token;
+        this.creatorId = creatorId;
+        this.amount = amount;
+        this.type = type;
+    }
+
+    public Transaction(long token, long creatorId, BigDecimal amount, String type) {
+        this.token = token;
         this.creatorId = creatorId;
         this.amount = amount;
         this.type = type;
@@ -24,6 +33,14 @@ public class Transaction {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getToken() {
+        return token;
+    }
+
+    public void setToken(long token) {
+        this.token = token;
     }
 
     public long getCreatorId() {
@@ -73,6 +90,7 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
+                ", token=" + token +
                 ", creatorId=" + creatorId +
                 ", amount=" + amount +
                 ", type='" + type + '\'' +

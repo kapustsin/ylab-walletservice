@@ -18,6 +18,19 @@ public class Player {
         this.balance = new BigDecimal(0);
     }
 
+    public Player(String login, String password) {
+        this.login = login;
+        this.password = password;
+        this.balance = new BigDecimal(0);
+    }
+
+    public Player(long id, String login, String password, BigDecimal balance) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.balance = balance;
+    }
+
     public long getId() {
         return id;
     }
