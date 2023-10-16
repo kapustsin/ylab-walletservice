@@ -37,7 +37,7 @@ public class JdbcTransactionRepository implements TransactionRepository {
     @Override
     public Optional<Transaction> get(long id) {
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(queries.getProperty("SELECT_BY_ID"));) {
+             PreparedStatement statement = connection.prepareStatement(queries.getProperty("SELECT_BY_ID"))) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -77,7 +77,7 @@ public class JdbcTransactionRepository implements TransactionRepository {
     @Override
     public boolean isTransactionTokenUnique(long token) {
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(queries.getProperty("SELECT_TOKEN"));) {
+             PreparedStatement statement = connection.prepareStatement(queries.getProperty("SELECT_TOKEN"))) {
             statement.setLong(1, token);
             try (ResultSet resultSet = statement.executeQuery()) {
                 return !resultSet.next();
@@ -90,7 +90,7 @@ public class JdbcTransactionRepository implements TransactionRepository {
     @Override
     public List<Transaction> getHistory(long playerId) {
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(queries.getProperty("SELECT_BY_CREATOR_ID"));) {
+             PreparedStatement statement = connection.prepareStatement(queries.getProperty("SELECT_BY_CREATOR_ID"))) {
             statement.setLong(1, playerId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {

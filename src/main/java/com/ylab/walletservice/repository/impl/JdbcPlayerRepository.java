@@ -52,7 +52,7 @@ public class JdbcPlayerRepository implements PlayerRepository {
     @Override
     public Optional<Player> get(String login) {
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(queries.getProperty("SELECT_BY_LOGIN"));) {
+             PreparedStatement statement = connection.prepareStatement(queries.getProperty("SELECT_BY_LOGIN"))) {
             statement.setString(1, login);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {

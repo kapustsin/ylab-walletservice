@@ -20,13 +20,12 @@ public class ConnectionManager {
         Connection connection;
         Properties properties = new Properties();
         try {
-            properties.load(this.getClass().getClassLoader().getResourceAsStream("connection.properties"));
-            Class.forName(properties.getProperty("database.driver"));
-            String url = properties.getProperty("database.url");
-            String user = properties.getProperty("database.user");
-            String password = properties.getProperty("database.password");
+            properties.load(this.getClass().getClassLoader().getResourceAsStream("db.properties"));
+            Class.forName(properties.getProperty("driver"));
+            String url = properties.getProperty("url");
+            String user = properties.getProperty("user");
+            String password = properties.getProperty("password");
             connection = DriverManager.getConnection(url, user, password);
-           // connection.setAutoCommit(false);
         } catch (SQLException | IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
