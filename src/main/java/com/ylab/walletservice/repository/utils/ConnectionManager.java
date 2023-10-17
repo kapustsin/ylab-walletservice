@@ -23,7 +23,7 @@ public class ConnectionManager {
             properties.load(this.getClass().getClassLoader().getResourceAsStream("db.properties"));
             Class.forName(properties.getProperty("driver"));
             String url = properties.getProperty("url");
-            String user = properties.getProperty("user");
+            String user = properties.getProperty("username");
             String password = properties.getProperty("password");
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException | IOException | ClassNotFoundException e) {
