@@ -1,25 +1,29 @@
 package com.ylab.walletservice.service;
 
 import com.ylab.walletservice.domain.Player;
-import com.ylab.walletservice.domain.repository.PlayerRepository;
-import org.junit.Before;
-import org.junit.Test;
+import com.ylab.walletservice.repository.PlayerRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 public class PlayerServiceTest {
     private PlayerRepository playerRepository;
     private PlayerService playerService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         playerRepository = mock(PlayerRepository.class);
         playerService = new PlayerService(playerRepository);
@@ -27,30 +31,41 @@ public class PlayerServiceTest {
 
     @Test
     public void testCreateNewUserSuccess() {
-        when(playerRepository.exists("newUser")).thenReturn(false);
+        String login = "newUser";
+        String password = "password123";
+        Optional<Player> emptyPlayer = Optional.empty();
 
-        boolean result = playerService.create("newUser", "password123");
+        when(playerRepository.get(login)).thenReturn(emptyPlayer);
+        when(playerRepository.create(any(Player.class))).thenReturn(1L);
+
+        boolean result = playerService.create(login, password);
 
         assertTrue(result);
-        verify(playerRepository, times(1)).create("newUser", "password123");
+
+        Player expectedPlayer = new Player(login, password);
+        verify(playerRepository, times(1)).create(expectedPlayer);
+        verify(playerRepository, times(1)).get(login);
     }
 
     @Test
     public void testCreateExistingUser() {
-        when(playerRepository.exists("existingUser")).thenReturn(true);
+        String existingUserLogin = "existingUser";
+        when(playerRepository.get(existingUserLogin)).thenReturn(
+                Optional.of(new Player(1, existingUserLogin, "password123")));
 
-        boolean result = playerService.create("existingUser", "password123");
+        boolean result = playerService.create(existingUserLogin, "password123");
 
         assertFalse(result);
-        verify(playerRepository, never()).create(anyString(), anyString());
+        verify(playerRepository, never()).create(any(Player.class));
     }
 
     @Test
     public void testDoAuthorizationSuccess() {
-        Player existingPlayer = new Player(1, "user123", "password123");
-        when(playerRepository.get("user123")).thenReturn(existingPlayer);
+        String userLogin = "user123";
+        Player existingPlayer = new Player(1, userLogin, "password123");
+        when(playerRepository.get(userLogin)).thenReturn(Optional.of(existingPlayer));
 
-        Optional<Player> result = playerService.doAuthorisation("user123", "password123");
+        Optional<Player> result = playerService.doAuthorisation(userLogin, "password123");
 
         assertTrue(result.isPresent());
         assertEquals(existingPlayer, result.get());
@@ -58,7 +73,7 @@ public class PlayerServiceTest {
 
     @Test
     public void testDoAuthorizationFailure() {
-        when(playerRepository.get("nonExistingUser")).thenReturn(null);
+        when(playerRepository.get("nonExistingUser")).thenReturn(Optional.empty());
 
         Optional<Player> result = playerService.doAuthorisation("nonExistingUser", "wrongPassword");
 
@@ -67,12 +82,16 @@ public class PlayerServiceTest {
 
     @Test
     public void testGetBalance() {
-        Player player = new Player(1, "user123", "password123");
-        player.setBalance(1000.0);
-        when(playerRepository.get("user123")).thenReturn(player);
+        String userLogin = "user123";
+        BigDecimal expectedBalance = new BigDecimal("1000.0");
 
-        double balance = playerService.getBalance("user123");
+        Player player = new Player(1, userLogin, "password123");
+        player.setBalance(expectedBalance);
 
-        assertEquals(1000.0, balance, 0.0);
+        when(playerRepository.get(userLogin)).thenReturn(Optional.of(player));
+
+        BigDecimal balance = playerService.getBalance(userLogin);
+
+        assertEquals(expectedBalance, balance);
     }
 }

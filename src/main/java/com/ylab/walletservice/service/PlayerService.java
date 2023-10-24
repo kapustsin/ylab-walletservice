@@ -1,45 +1,88 @@
 package com.ylab.walletservice.service;
 
 import com.ylab.walletservice.domain.Player;
-import com.ylab.walletservice.domain.Transaction;
-import com.ylab.walletservice.domain.repository.PlayerRepository;
+import com.ylab.walletservice.repository.PlayerRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Optional;
 
-import static java.util.Objects.isNull;
-
+/**
+ * Service class for managing player operations such as registration, authorization, and balance retrieval.
+ */
 public class PlayerService {
     private final PlayerRepository playerRepository;
 
+    /**
+     * Constructs a PlayerService object with the specified PlayerRepository instance.
+     *
+     * @param playerRepository The repository used for player-related data access.
+     */
     public PlayerService(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
+    /**
+     * Registers a new player with the given login and password.
+     *
+     * @param login    The login of the new player.
+     * @param password The password of the new player.
+     * @return true if registration is successful, false otherwise.
+     */
     public boolean create(String login, String password) {
-        if (!playerRepository.exists(login)) {
-            playerRepository.create(login, password);
-            LogService.add("New user creation. Success.");
+        if (playerRepository.get(login).isEmpty()) {
+            Player player = new Player(login, password);
+            playerRepository.create(player);
+            LogService.add("New player creation. Success.");
             return true;
         } else {
-            LogService.add("New user creation. Error.");
+            LogService.add("New player creation. Error.");
             return false;
         }
     }
 
+    /**
+     * Authorizes a player with the given username and password.
+     *
+     * @param username The username of the player.
+     * @param password The password of the player.
+     * @return An Optional containing the authorized Player object if successful, or empty otherwise.
+     */
     public Optional<Player> doAuthorisation(String username, String password) {
-        Player player = playerRepository.get(username);
-        if (!isNull(player) && (player.getPassword().equals(password))) {
-            LogService.add("User with login " + username + "success authorization.");
-            return Optional.of(player);
+        Optional<Player> player = playerRepository.get(username);
+        if (player.isPresent() && (player.get().getPassword().equals(password))) {
+            LogService.add("Player with login " + username + "success authorization.");
+            return player;
         } else {
-            LogService.add("User with login " + username + " authorization failed.");
+            LogService.add("Player with login " + username + " authorization failed.");
             return Optional.empty();
         }
     }
 
-    public double getBalance(String login) {
-        return playerRepository.get(login).getBalance();
+    /**
+     * Retrieves the balance of the player with the given login.
+     *
+     * @param login The login of the player.
+     * @return The balance of the player.
+     */
+    public BigDecimal getBalance(String login) {
+        Optional<Player> player = playerRepository.get(login);
+        if (player.isPresent()) {
+            return player.get().getBalance();
+        } else {
+            String message = "Player with login " + login + " authorization failed.";
+            LogService.add(message);
+            throw new RuntimeException(message);
+        }
+    }
+
+    /**
+     * Sets the balance for the player with the specified ID.
+     *
+     * @param id      The ID of the player.
+     * @param balance The new balance to be set for the player.
+     * @throws RuntimeException If there is an error updating the balance in the database.
+     */
+    public void setBalance(long id, BigDecimal balance) {
+        playerRepository.updateBalance(id, balance);
     }
 }

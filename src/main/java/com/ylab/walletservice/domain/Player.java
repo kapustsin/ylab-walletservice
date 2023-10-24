@@ -1,22 +1,41 @@
 package com.ylab.walletservice.domain;
 
+import java.math.BigDecimal;
+
+/**
+ * Represents a player entity with unique ID, login, password, and balance.
+ */
 public class Player {
     long id;
     String login;
     String password;
-    double balance;
+    BigDecimal balance;
 
     public Player(long id, String login, String password) {
+        this.id = id;
         this.login = login;
         this.password = password;
-        this.balance = 0;
+        this.balance = new BigDecimal(0);
+    }
+
+    public Player(String login, String password) {
+        this.login = login;
+        this.password = password;
+        this.balance = new BigDecimal(0);
+    }
+
+    public Player(long id, String login, String password, BigDecimal balance) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.balance = balance;
     }
 
     public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -36,11 +55,11 @@ public class Player {
         this.password = password;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 
