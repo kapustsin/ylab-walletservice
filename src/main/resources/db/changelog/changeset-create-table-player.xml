@@ -7,8 +7,8 @@
 
     <changeSet id="create_table_player" author="A.Kapustsin">
 
-        <createTable tableName="player">
-            <column autoIncrement="true" name="id" type="serial">
+        <createTable schemaName="walletservice" tableName="player">
+            <column name="id" type="bigint" defaultValueSequenceNext="player_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="login" type="VARCHAR(45)"/>

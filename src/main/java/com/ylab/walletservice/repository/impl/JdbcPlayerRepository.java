@@ -16,16 +16,10 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class JdbcPlayerRepository implements PlayerRepository {
-    private final Properties queries = new Properties();
     private final ConnectionManager connectionManager;
 
     public JdbcPlayerRepository() {
         this.connectionManager = ConnectionManager.getInstance();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("player_query.properties")) {
-            queries.load(input);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Connection getConnection() {
@@ -34,8 +28,11 @@ public class JdbcPlayerRepository implements PlayerRepository {
 
     @Override
     public long create(Player player) {
+        final String SQL_CREATE = """
+                INSERT INTO walletservice.player (login, password, balance) VALUES (?, ?, 0)
+                """;
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(queries.getProperty("CREATE"),
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE,
                      Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, player.getLogin());
             statement.setString(2, player.getPassword());
@@ -51,8 +48,11 @@ public class JdbcPlayerRepository implements PlayerRepository {
 
     @Override
     public Optional<Player> get(String login) {
+        final String SQL_SELECT_BY_LOGIN = """
+                SELECT id, login, password, balance FROM walletservice.player WHERE login = ?
+                """;
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(queries.getProperty("SELECT_BY_LOGIN"))) {
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_LOGIN)) {
             statement.setString(1, login);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -70,8 +70,11 @@ public class JdbcPlayerRepository implements PlayerRepository {
 
     @Override
     public void updateBalance(long id, BigDecimal balance) {
+        final String SQL_UPDATE_BALANCE = """
+                UPDATE walletservice.player SET balance = ? WHERE id = ?
+                """;
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(queries.getProperty("UPDATE_BALANCE"))) {
+             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_BALANCE)) {
             statement.setBigDecimal(1, balance);
             statement.setLong(2, id);
             statement.executeUpdate();

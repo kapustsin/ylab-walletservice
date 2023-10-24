@@ -7,8 +7,8 @@
 
     <changeSet id="create_table_transaction" author="A.Kapustsin">
 
-        <createTable tableName="transaction">
-            <column autoIncrement="true" name="id" type="serial">
+        <createTable schemaName="walletservice" tableName="transaction">
+            <column name="id" type="bigint" defaultValueSequenceNext="transaction_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="token" type="BIGINT"/>

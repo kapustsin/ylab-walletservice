@@ -81,7 +81,7 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>${liquibase.version}</version>
                 <configuration>
-                    <propertyFile>src/main/resources/db.properties</propertyFile>
+                    <propertyFile>db.properties</propertyFile>
                 </configuration>
                 <executions>
                     <execution>
