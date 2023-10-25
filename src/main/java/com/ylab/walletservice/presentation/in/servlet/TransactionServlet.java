@@ -53,12 +53,18 @@ public class TransactionServlet extends HttpServlet {
             if (playerDto != null) {
                 String json = req.getReader().lines().collect(joining());
                 TransactionRequestDto transactionRequest = objectMapper.readValue(json, TransactionRequestDto.class);
-                if (transactionService.create(transactionRequest)) {
-                    resp.setStatus(HttpServletResponse.SC_CREATED);
-                    resp.getOutputStream().write(objectMapper.writeValueAsBytes("Transaction created successfully!"));
+                if (Utils.isValid(transactionRequest, playerDto.id())) {
+                    if (transactionService.create(transactionRequest)) {
+                        resp.setStatus(HttpServletResponse.SC_CREATED);
+                        resp.getOutputStream()
+                                .write(objectMapper.writeValueAsBytes("Transaction created successfully!"));
+                    } else {
+                        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        resp.getOutputStream().write(objectMapper.writeValueAsBytes("Transaction creation failed!"));
+                    }
                 } else {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    resp.getOutputStream().write(objectMapper.writeValueAsBytes("Transaction creation failed!"));
+                    resp.getOutputStream().write(objectMapper.writeValueAsBytes("Transaction validation error!"));
                 }
             } else {
                 resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

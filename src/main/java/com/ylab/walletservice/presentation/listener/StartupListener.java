@@ -53,7 +53,7 @@ public class StartupListener implements ServletContextListener {
         context.setAttribute("playerService", playerService);
         context.setAttribute("transactionService", transactionService);
         context.setAttribute("objectMapper", objectMapper);
-        System.out.println("startup ok");
+        LogService.add("Server startup successfully.");
     }
 
     @Override

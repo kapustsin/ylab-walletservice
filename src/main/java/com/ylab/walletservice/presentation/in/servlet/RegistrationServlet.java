@@ -31,12 +31,17 @@ public class RegistrationServlet extends HttpServlet {
         try {
             String json = req.getReader().lines().collect(joining());
             RegistrationDto registrationData = objectMapper.readValue(json, RegistrationDto.class);
-            if (playerService.create(registrationData)) {
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Success registration!"));
+            if (Utils.isValid(registrationData)) {
+                if (playerService.create(registrationData)) {
+                    resp.setStatus(HttpServletResponse.SC_CREATED);
+                    resp.getOutputStream().write(objectMapper.writeValueAsBytes("Success registration!"));
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getOutputStream().write(objectMapper.writeValueAsBytes("Registration failed!"));
+                }
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Registration failed!"));
+                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Registration data validation error!"));
             }
         } catch (IOException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

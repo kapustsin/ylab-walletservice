@@ -32,15 +32,20 @@ public class AuthorisationServlet extends HttpServlet {
         try {
             String json = req.getReader().lines().collect(joining());
             CredentialsDto credentials = objectMapper.readValue(json, CredentialsDto.class);
-            Optional<LoggedInPlayerDto> player = service.doAuthorisation(credentials);
-            if (player.isPresent()) {
-// todo add JWT
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Success authorization!"));
-                req.getSession().setAttribute("Player", player.get());
+            if (Utils.isValid(credentials)) {
+                Optional<LoggedInPlayerDto> player = service.doAuthorisation(credentials);
+                if (player.isPresent()) {
+                    // todo add JWT
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getOutputStream().write(objectMapper.writeValueAsBytes("Success authorization!"));
+                    req.getSession().setAttribute("Player", player.get());
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    resp.getOutputStream().write(objectMapper.writeValueAsBytes("Authorization failed!"));
+                }
             } else {
-                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Authorization failed!"));
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Credentials validation error!"));
             }
         } catch (IOException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

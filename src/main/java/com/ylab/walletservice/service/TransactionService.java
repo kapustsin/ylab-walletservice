@@ -40,8 +40,8 @@ public class TransactionService {
         if (isTransactionTokenUnique(transactionRequest.token())) {
             if ("debit".equals(transactionRequest.type()) &&
                     checkDebit(transactionRequest.creatorId(), transactionRequest.amount())) {
-                Transaction transaction = new Transaction();
-                transactionMapper.transactionDtoToTransaction(transactionRequest, transaction);
+                Transaction transaction =
+                        transactionMapper.transactionDtoToTransaction(transactionRequest, new Transaction());
                 long id = transactionRepository.create(transaction);
                 playerService.setBalance(transactionRequest.creatorId(),
                         playerService.getBalance(transactionRequest.creatorId()).subtract(transactionRequest.amount()));
