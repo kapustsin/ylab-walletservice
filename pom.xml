@@ -7,7 +7,7 @@
     <groupId>com.ylab</groupId>
     <artifactId>walletservice</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -15,10 +15,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <junit-jupiter-engine.version>5.10.0</junit-jupiter-engine.version>
-        <mockito-core.version>5.6.0</mockito-core.version>
+        <mockito.version>5.6.0</mockito.version>
         <postgresql.version>42.6.0</postgresql.version>
         <liquibase.version>4.24.0</liquibase.version>
         <testcontainers.version>1.19.1</testcontainers.version>
+        <servlet.version>6.0.0</servlet.version>
+        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+        <jackson-databind.version>2.15.3</jackson-databind.version>
     </properties>
 
     <dependencies>
@@ -33,7 +36,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${mockito-core.version}</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -70,6 +73,18 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${servlet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -92,6 +107,13 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war-plugin.version}</version>
+            </plugin>
+
 
         </plugins>
 

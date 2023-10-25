@@ -48,6 +48,11 @@ public class ConnectionManager {
             url = properties.getProperty("url");
             user = properties.getProperty("username");
             password = properties.getProperty("password");
+            try {
+                Class.forName(properties.getProperty("driver"));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             url = System.getProperty(customEnv + "_URL");
             user = System.getProperty(customEnv + "_USERNAME");
