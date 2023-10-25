@@ -1,7 +1,8 @@
 package com.ylab.walletservice.service;
 
-import com.ylab.walletservice.domain.Player;
 import com.ylab.walletservice.domain.Transaction;
+import com.ylab.walletservice.domain.dto.TransactionRequestDto;
+import com.ylab.walletservice.domain.mapper.TransactionMapper;
 import com.ylab.walletservice.repository.TransactionRepository;
 
 import java.math.BigDecimal;
@@ -12,6 +13,10 @@ import java.util.Random;
  * Service class for managing transaction operations such as creating transactions and retrieving transaction history.
  */
 public class TransactionService {
+    /**
+     * The mapper for converting between TransactionRequestDto and Transaction objects.
+     */
+    private final TransactionMapper transactionMapper = TransactionMapper.MAPPER;
     private final TransactionRepository transactionRepository;
     private final PlayerService playerService;
 
@@ -26,33 +31,38 @@ public class TransactionService {
     }
 
     /**
-     * Creates a new transaction for the given player with the specified amount and type.
+     * Creates a new transaction based on the provided TransactionRequestDto.
      *
-     * @param player The player initiating the transaction.
-     * @param amount The amount of the transaction.
-     * @param type   The type of the transaction ("debit" or "credit").
+     * @param transactionRequest The TransactionRequestDto containing transaction details.
      * @return true if the transaction is successful, false otherwise.
      */
-    public boolean create(Player player, BigDecimal amount, String type) {
-        long token = generateTransactionToken();
-        if (isTransactionTokenUnique(token)) {
-            if ("debit".equals(type) && checkDebit(player.getLogin(), amount)) {
-                long id = transactionRepository.create(new Transaction(token, player.getId(), amount, type));
-                playerService.setBalance(player.getId(), playerService.getBalance(player.getLogin()).subtract(amount));
+    public boolean create(TransactionRequestDto transactionRequest) {
+        if (isTransactionTokenUnique(transactionRequest.token())) {
+            if ("debit".equals(transactionRequest.type()) &&
+                    checkDebit(transactionRequest.creatorId(), transactionRequest.amount())) {
+                Transaction transaction = new Transaction();
+                transactionMapper.transactionDtoToTransaction(transactionRequest, transaction);
+                long id = transactionRepository.create(transaction);
+                playerService.setBalance(transactionRequest.creatorId(),
+                        playerService.getBalance(transactionRequest.creatorId()).subtract(transactionRequest.amount()));
                 LogService.add("Debit transaction success. Id = " + id);
                 return true;
-            } else if ("credit".equals(type)) {
-                long id = transactionRepository.create(new Transaction(token, player.getId(), amount, type));
-                playerService.setBalance(player.getId(), playerService.getBalance(player.getLogin()).add(amount));
+            } else if ("credit".equals(transactionRequest.type())) {
+                Transaction transaction = new Transaction();
+                transactionMapper.transactionDtoToTransaction(transactionRequest, transaction);
+                long id = transactionRepository.create(transaction);
+                playerService.setBalance(transactionRequest.creatorId(),
+                        playerService.getBalance(transactionRequest.creatorId()).add(transactionRequest.amount()));
                 LogService.add("Credit transaction success. Id = " + id);
                 return true;
             } else {
-                LogService.add("Create transaction failed. Token = " + token + ", player id = " + player.getId() +
-                        ", amount = " + amount + ", type = " + type);
+                LogService.add("Create transaction failed. Token = " + transactionRequest.token() + ", player id = " +
+                        transactionRequest.creatorId() +
+                        ", amount = " + transactionRequest.amount() + ", type = " + transactionRequest.type());
                 return false;
             }
         } else {
-            LogService.add("Create transaction failed. Token = " + token + " not unique.");
+            LogService.add("Create transaction failed. Token = " + transactionRequest.token() + " not unique.");
             return false;
         }
     }
@@ -71,12 +81,12 @@ public class TransactionService {
     /**
      * Checks if a debit transaction is valid for the given player.
      *
-     * @param login  The login of the player.
-     * @param amount The amount of the transaction.
+     * @param playerId The ID of the player.
+     * @param amount   The amount of the transaction.
      * @return true if the debit is valid, false otherwise.
      */
-    private boolean checkDebit(String login, BigDecimal amount) {
-        BigDecimal balance = playerService.getBalance(login);
+    private boolean checkDebit(long playerId, BigDecimal amount) {
+        BigDecimal balance = playerService.getBalance(playerId);
         LogService.add("User check balance = " + balance.toString());
         return balance.subtract(amount).compareTo(BigDecimal.ZERO) >= 0;
     }

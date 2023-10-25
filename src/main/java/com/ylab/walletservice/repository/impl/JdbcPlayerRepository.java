@@ -4,8 +4,6 @@ import com.ylab.walletservice.domain.Player;
 import com.ylab.walletservice.repository.PlayerRepository;
 import com.ylab.walletservice.repository.utils.ConnectionManager;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
-import java.util.Properties;
 
 public class JdbcPlayerRepository implements PlayerRepository {
     private final ConnectionManager connectionManager;
@@ -62,6 +59,23 @@ public class JdbcPlayerRepository implements PlayerRepository {
                 } else {
                     return Optional.empty();
                 }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public BigDecimal getBalance(long playerId) {
+        final String SQL_SELECT_BALANCE_BY_ID = """
+                SELECT balance FROM walletservice.player WHERE id = ?
+                """;
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BALANCE_BY_ID)) {
+            statement.setLong(1, playerId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getBigDecimal(1);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

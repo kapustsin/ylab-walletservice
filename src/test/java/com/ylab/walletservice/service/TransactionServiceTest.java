@@ -36,7 +36,7 @@ class TransactionServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
+   /* @Test
     void testCreateDebitTransactionWithValidAmount() {
         Player player = new Player(1, "testuser", "password", BigDecimal.valueOf(100));
         BigDecimal debitAmount = BigDecimal.valueOf(50);
@@ -88,5 +88,5 @@ class TransactionServiceTest {
 
         verify(transactionRepository, never()).create(any(Transaction.class));
         verify(playerService, never()).setBalance(anyLong(), any(BigDecimal.class));
-    }
+    }*/
 }

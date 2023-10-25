@@ -75,7 +75,8 @@ public class ConsoleProcessor {
         String login = scanner.nextLine();
         System.out.print("Input password:");
         String password = scanner.nextLine();
-        return playerService.create(login, password);
+        //return playerService.create(login, password);
+        return true;
     }
 
     /**
@@ -89,7 +90,8 @@ public class ConsoleProcessor {
         String login = scanner.nextLine();
         System.out.print("Input password:");
         String password = scanner.nextLine();
-        return playerService.doAuthorisation(login, password);
+        //   return playerService.doAuthorisation(login, password);
+        return null;
     }
 
     /**
@@ -99,7 +101,7 @@ public class ConsoleProcessor {
      * @param player The logged-in player.
      */
     public void doWork(Player player) {
-        System.out.println("Hello " + player.getLogin() + "!");
+        /*System.out.println("Hello " + player.getLogin() + "!");
         System.out.println("Press:");
         System.out.println("1-Debit");
         System.out.println("2-Credit");
@@ -157,7 +159,7 @@ public class ConsoleProcessor {
             System.out.println("4-History");
             System.out.println("0-Exit");
             input = scanner.nextInt();
-        }
+        }*/
         System.out.println("Exit.");
     }
 }

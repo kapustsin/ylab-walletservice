@@ -11,6 +11,9 @@ public class Player {
     String password;
     BigDecimal balance;
 
+    public Player() {
+    }
+
     public Player(long id, String login, String password) {
         this.id = id;
         this.login = login;

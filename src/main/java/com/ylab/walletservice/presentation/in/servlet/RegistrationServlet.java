@@ -1,7 +1,7 @@
 package com.ylab.walletservice.presentation.in.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.ylab.walletservice.domain.dto.RegistrationDto;
 import com.ylab.walletservice.service.PlayerService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -27,13 +27,21 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String json = req.getReader().lines().collect(joining());
-        System.out.println(json);
-        if (playerService.create(req.getParameter("login"), req.getParameter("password"))) {
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        resp.setContentType("application/json");
+        try {
+            String json = req.getReader().lines().collect(joining());
+            RegistrationDto registrationData = objectMapper.readValue(json, RegistrationDto.class);
+            if (playerService.create(registrationData)) {
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Success registration!"));
+            } else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Registration failed!"));
+            }
+        } catch (IOException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getOutputStream().write(objectMapper.writeValueAsBytes("Internal server error!"));
+            e.printStackTrace();
         }
-
     }
 }

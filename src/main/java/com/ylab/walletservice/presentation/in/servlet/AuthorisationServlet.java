@@ -1,7 +1,8 @@
 package com.ylab.walletservice.presentation.in.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ylab.walletservice.domain.Player;
+import com.ylab.walletservice.domain.dto.CredentialsDto;
+import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
 import com.ylab.walletservice.service.PlayerService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,12 +28,24 @@ public class AuthorisationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String json = req.getReader().lines().collect(joining());
-        Optional<Player> player = service.doAuthorisation(req.getParameter("login"), req.getParameter("password"));
-        if (player.isPresent()) {
-            resp.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        resp.setContentType("application/json");
+        try {
+            String json = req.getReader().lines().collect(joining());
+            CredentialsDto credentials = objectMapper.readValue(json, CredentialsDto.class);
+            Optional<LoggedInPlayerDto> player = service.doAuthorisation(credentials);
+            if (player.isPresent()) {
+// todo add JWT
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Success authorization!"));
+                req.getSession().setAttribute("Player", player.get());
+            } else {
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                resp.getOutputStream().write(objectMapper.writeValueAsBytes("Authorization failed!"));
+            }
+        } catch (IOException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getOutputStream().write(objectMapper.writeValueAsBytes("Internal server error!"));
+            e.printStackTrace();
         }
     }
 }

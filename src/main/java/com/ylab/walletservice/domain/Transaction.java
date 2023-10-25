@@ -12,6 +12,9 @@ public class Transaction {
     BigDecimal amount;
     String type;
 
+    public Transaction() {
+    }
+
     public Transaction(long id, long token, long creatorId, BigDecimal amount, String type) {
         this.id = id;
         this.token = token;
