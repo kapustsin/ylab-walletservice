@@ -68,7 +68,6 @@ public class PlayerAuditAspect {
      */
     @Around("execution(* com.ylab.walletservice.service.PlayerService.getBalance(long)) && args(playerId)")
     public BigDecimal getBalanceAspect(ProceedingJoinPoint joinPoint, long playerId) throws Throwable {
-        System.out.println("Inside checkBalanceAspect!");
         BigDecimal balance = (BigDecimal) joinPoint.proceed();
         LogService.add("Player with id = " + playerId + " checked balance.");
         return balance;

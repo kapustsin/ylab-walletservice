@@ -28,7 +28,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-@Disabled
+
 @Testcontainers
 public class TransactionRepositoryTest {
     private static final String SCHEMA_LIQUIBASE = "liquibase";
@@ -86,14 +86,6 @@ public class TransactionRepositoryTest {
         }
     }
 
-
-    @Test
-    public void testCreateTransaction() {
-        Transaction transaction = new Transaction(12345, 1, 100L, BigDecimal.valueOf(50.0), "credit");
-        long transactionId = transactionRepository.create(transaction);
-        assertTrue(transactionId > 0);
-    }
-
     @Test
     public void testGetTransactionById() {
         Transaction transaction = new Transaction(12345, 1, 100L, BigDecimal.valueOf(50.0), "credit");
@@ -102,6 +94,20 @@ public class TransactionRepositoryTest {
         Optional<Transaction> retrievedTransaction = transactionRepository.get(transactionId);
         assertTrue(retrievedTransaction.isPresent());
         assertEquals(transactionId, retrievedTransaction.get().getId());
+    }
+
+    @Test
+    public void testGetNonExistingTransaction() {
+        long nonExistingTransactionId = 999999L;
+        Optional<Transaction> retrievedTransaction = transactionRepository.get(nonExistingTransactionId);
+        assertFalse(retrievedTransaction.isPresent());
+    }
+
+    @Test
+    public void testCreateTransaction() {
+        Transaction transaction = new Transaction(12345, 1, 100L, BigDecimal.valueOf(50.0), "credit");
+        long transactionId = transactionRepository.create(transaction);
+        assertTrue(transactionId > 0);
     }
 
     @Test
@@ -116,6 +122,19 @@ public class TransactionRepositoryTest {
     }
 
     @Test
+    public void testIsTransactionTokenNotUnique() {
+        long nonUniqueToken = 345L;
+
+        Transaction transaction1 = new Transaction(1, 345, 101L, BigDecimal.valueOf(30.0), "debit");
+        Transaction transaction2 = new Transaction(2, 346, 102L, BigDecimal.valueOf(40.0), "credit");
+
+        transactionRepository.create(transaction1);
+        transactionRepository.create(transaction2);
+
+        assertFalse(transactionRepository.isTransactionTokenUnique(nonUniqueToken));
+    }
+
+    @Test
     public void testGetTransactionHistory() {
         long playerId = 8L;
         Transaction transaction1 = new Transaction(111, playerId, 8L, BigDecimal.valueOf(50.0), "credit");
@@ -126,5 +145,13 @@ public class TransactionRepositoryTest {
 
         List<Transaction> transactions = transactionRepository.getHistory(playerId);
         assertEquals(2, transactions.size());
+    }
+
+    @Test
+    public void testGetTransactionHistoryForPlayerWithoutTransactions() {
+        long playerId = 9L;
+
+        List<Transaction> transactions = transactionRepository.getHistory(playerId);
+        assertTrue(transactions.isEmpty());
     }
 }

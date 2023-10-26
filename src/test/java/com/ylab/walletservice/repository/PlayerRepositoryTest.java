@@ -12,7 +12,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -25,8 +24,9 @@ import java.sql.Statement;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-@Disabled
+
 @Testcontainers
 public class PlayerRepositoryTest {
     private static final String SCHEMA_LIQUIBASE = "liquibase";
@@ -98,6 +98,12 @@ public class PlayerRepositoryTest {
         Optional<Player> retrievedPlayer = playerRepository.get("testuser2");
         assertTrue(retrievedPlayer.isPresent());
         assertEquals(playerId, retrievedPlayer.get().getId());
+    }
+
+    @Test
+    public void testGetNonExistingPlayer() {
+        Optional<Player> retrievedPlayer = playerRepository.get("nonExistingUser");
+        assertFalse(retrievedPlayer.isPresent());
     }
 
     @Test
