@@ -8,6 +8,7 @@ import com.ylab.walletservice.repository.utils.ConnectionManager;
 import com.ylab.walletservice.service.LogService;
 import com.ylab.walletservice.service.PlayerService;
 import com.ylab.walletservice.service.TransactionService;
+import com.ylab.walletservice.service.utils.JwtService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -49,10 +50,12 @@ public class StartupListener implements ServletContextListener {
         TransactionService transactionService = new TransactionService(new JdbcTransactionRepository(), playerService);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        JwtService jwtService = new JwtService();
         ServletContext context = event.getServletContext();
         context.setAttribute("playerService", playerService);
         context.setAttribute("transactionService", transactionService);
         context.setAttribute("objectMapper", objectMapper);
+        context.setAttribute("jwtService", jwtService);
         LogService.add("Server startup successfully.");
     }
 

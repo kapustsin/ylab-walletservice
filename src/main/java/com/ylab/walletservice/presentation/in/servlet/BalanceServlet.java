@@ -3,6 +3,7 @@ package com.ylab.walletservice.presentation.in.servlet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
 import com.ylab.walletservice.service.PlayerService;
+import com.ylab.walletservice.service.utils.JwtService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,19 +16,22 @@ import java.io.IOException;
 public class BalanceServlet extends HttpServlet {
     private ObjectMapper objectMapper;
     private PlayerService playerService;
+    private JwtService jwtService;
 
     @Override
     public void init(ServletConfig config) {
         objectMapper = (ObjectMapper) config.getServletContext().getAttribute("objectMapper");
         playerService = (PlayerService) config.getServletContext().getAttribute("playerService");
+        jwtService = (JwtService) config.getServletContext().getAttribute("jwtService");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         LoggedInPlayerDto playerDto = (LoggedInPlayerDto) req.getSession().getAttribute("Player");
+        String token = req.getHeader("Authorization").replace("Bearer ", "");
         try {
-            if (playerDto != null) {
+            if (playerDto != null && jwtService.isValid(token, playerDto)) {
                 resp.setStatus(HttpServletResponse.SC_OK);
                 resp.getOutputStream()
                         .write(objectMapper.writeValueAsBytes("Balance = " + playerService.getBalance(playerDto.id())));
