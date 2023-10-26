@@ -12,12 +12,22 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Handles HTTP GET requests for retrieving player balance.
+ * It validates the user's session, authorization token, and fetches the player's balance from the {@link PlayerService}.
+ * The response contains the player's balance in JSON format.
+ */
 @WebServlet("/balance")
 public class BalanceServlet extends HttpServlet {
     private ObjectMapper objectMapper;
     private PlayerService playerService;
     private JwtService jwtService;
 
+    /**
+     * Initializes the servlet by retrieving necessary objects from the ServletConfig.
+     *
+     * @param config The ServletConfig containing servlet configuration information.
+     */
     @Override
     public void init(ServletConfig config) {
         objectMapper = (ObjectMapper) config.getServletContext().getAttribute("objectMapper");
@@ -25,6 +35,14 @@ public class BalanceServlet extends HttpServlet {
         jwtService = (JwtService) config.getServletContext().getAttribute("jwtService");
     }
 
+    /**
+     * Handles HTTP GET requests. Validates the user's session and authorization token.
+     * Retrieves the player's balance using {@link PlayerService} and sends the balance as a JSON response.
+     *
+     * @param req  The {@link HttpServletRequest} object representing the request.
+     * @param resp The {@link HttpServletResponse} object representing the response.
+     * @throws IOException If an I/O error occurs during request processing.
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");

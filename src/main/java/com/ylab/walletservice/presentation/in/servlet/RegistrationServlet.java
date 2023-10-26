@@ -17,17 +17,35 @@ import static java.util.stream.Collectors.joining;
 
 @Loggable
 @WebServlet("/registration")
+/*
+ * Handles HTTP POST requests for user registration.
+ * It receives registration data in JSON format, validates the data, and attempts to create a new player using {@link PlayerService}.
+ * The response contains a success message if the registration is successful, or an error message if registration fails.
+ */
 public class RegistrationServlet extends HttpServlet {
     private ObjectMapper objectMapper;
     private PlayerService playerService;
 
     @Override
+    /*
+     * Initializes the servlet by retrieving necessary objects from the ServletConfig.
+     *
+     * @param config The ServletConfig containing servlet configuration information.
+     */
     public void init(ServletConfig config) throws ServletException {
         objectMapper = (ObjectMapper) config.getServletContext().getAttribute("objectMapper");
         playerService = (PlayerService) config.getServletContext().getAttribute("playerService");
     }
 
     @Override
+    /*
+     * Handles HTTP POST requests for user registration. Validates the registration data,
+     * creates a new player using {@link PlayerService}, and sends a response with the result.
+     *
+     * @param req  The {@link HttpServletRequest} object representing the request.
+     * @param resp The {@link HttpServletResponse} object representing the response.
+     * @throws IOException If an I/O error occurs during request processing.
+     */
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         try {
@@ -48,7 +66,6 @@ public class RegistrationServlet extends HttpServlet {
         } catch (IOException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getOutputStream().write(objectMapper.writeValueAsBytes("Internal server error!"));
-            e.printStackTrace();
         }
     }
 }

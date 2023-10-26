@@ -16,12 +16,23 @@ import java.io.IOException;
 import static java.util.stream.Collectors.joining;
 
 @WebServlet("/transactions")
+/*
+ * Handles HTTP GET and POST requests for player transactions.
+ * It receives transaction data in JSON format, validates the data, and performs corresponding actions using {@link TransactionService}.
+ * The servlet allows retrieving transaction history using HTTP GET requests and creating new transactions using HTTP POST requests.
+ * The responses contain transaction information if successful, or an error message if the transaction fails.
+ */
 public class TransactionServlet extends HttpServlet {
     private ObjectMapper objectMapper;
     private TransactionService transactionService;
     private JwtService jwtService;
 
     @Override
+    /*
+     * Initializes the servlet by retrieving necessary objects from the ServletConfig.
+     *
+     * @param config The ServletConfig containing servlet configuration information.
+     */
     public void init(ServletConfig config) {
         objectMapper = (ObjectMapper) config.getServletContext().getAttribute("objectMapper");
         transactionService = (TransactionService) config.getServletContext().getAttribute("transactionService");
@@ -29,6 +40,14 @@ public class TransactionServlet extends HttpServlet {
     }
 
     @Override
+    /*
+     * Handles HTTP GET requests for retrieving player transaction history.
+     * Validates the JWT token and player session, then sends a response with the transaction history.
+     *
+     * @param req  The {@link HttpServletRequest} object representing the request.
+     * @param resp The {@link HttpServletResponse} object representing the response.
+     * @throws IOException If an I/O error occurs during request processing.
+     */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         LoggedInPlayerDto playerDto = (LoggedInPlayerDto) req.getSession().getAttribute("Player");
@@ -50,6 +69,14 @@ public class TransactionServlet extends HttpServlet {
     }
 
     @Override
+    /*
+     * Handles HTTP POST requests for creating new player transactions.
+     * Validates the JWT token, player session, and transaction data, then sends a response with the transaction result.
+     *
+     * @param req  The {@link HttpServletRequest} object representing the request.
+     * @param resp The {@link HttpServletResponse} object representing the response.
+     * @throws IOException If an I/O error occurs during request processing.
+     */
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         LoggedInPlayerDto playerDto = (LoggedInPlayerDto) req.getSession().getAttribute("Player");

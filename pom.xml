@@ -24,7 +24,6 @@
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <jackson-databind.version>2.15.3</jackson-databind.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <jakarta-validation-api.version>3.0.2</jakarta-validation-api.version>
         <jjwt.version>0.12.3</jjwt.version>
         <aspectj.version>1.9.20.1</aspectj.version>
         <aspectj-maven-plugin.version>1.14.0</aspectj-maven-plugin.version>
@@ -98,16 +97,11 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-            <version>${jakarta-validation-api.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>${jjwt.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>

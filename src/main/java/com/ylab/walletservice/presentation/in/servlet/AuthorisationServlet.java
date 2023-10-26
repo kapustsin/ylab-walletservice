@@ -6,6 +6,7 @@ import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
 import com.ylab.walletservice.service.PlayerService;
 import com.ylab.walletservice.service.utils.JwtService;
 import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,12 +17,21 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
+/**
+ * Handles HTTP POST requests for user authorization.
+ * It receives JSON containing user credentials, validates them, and responds with appropriate messages based on the authorization result.
+ */
 @WebServlet("/authorisation")
 public class AuthorisationServlet extends HttpServlet {
     private ObjectMapper objectMapper;
     private PlayerService service;
     private JwtService jwtService;
 
+    /**
+     * Initializes the servlet by retrieving necessary objects from the ServletConfig.
+     *
+     * @param config The ServletConfig containing servlet configuration information.
+     */
     @Override
     public void init(ServletConfig config) {
         objectMapper = (ObjectMapper) config.getServletContext().getAttribute("objectMapper");
@@ -29,6 +39,13 @@ public class AuthorisationServlet extends HttpServlet {
         jwtService = (JwtService) config.getServletContext().getAttribute("jwtService");
     }
 
+    /**
+     * Handles HTTP POST requests. Reads user credentials from the request, validates them, and sends appropriate responses.
+     *
+     * @param req  The {@link HttpServletRequest} object representing the request.
+     * @param resp The {@link HttpServletResponse} object representing the response.
+     * @throws IOException If an I/O error occurs during request processing.
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");

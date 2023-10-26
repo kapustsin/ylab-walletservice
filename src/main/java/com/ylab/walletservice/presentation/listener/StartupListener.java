@@ -23,7 +23,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * The startup listener for initializing the application on server startup.
+ */
 public class StartupListener implements ServletContextListener {
+    /**
+     * Initializes the database schema and applies Liquibase migrations.
+     */
     private static void initDb() {
         try (Connection connection = ConnectionManager.getInstance().getConnection();
              Statement statement = connection.createStatement();
@@ -43,6 +49,9 @@ public class StartupListener implements ServletContextListener {
         }
     }
 
+    /**
+     * Initializes the application context with necessary services and objects.
+     */
     @Override
     public void contextInitialized(ServletContextEvent event) {
         initDb();
@@ -59,7 +68,10 @@ public class StartupListener implements ServletContextListener {
         LogService.add("Server startup successfully.");
     }
 
+    /**
+     * Cleans up resources when the servlet context is destroyed.
+     */
     @Override
-    public void contextDestroyed(ServletContextEvent event) {
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
     }
 }
