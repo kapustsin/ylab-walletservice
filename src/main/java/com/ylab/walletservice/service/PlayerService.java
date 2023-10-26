@@ -1,5 +1,6 @@
 package com.ylab.walletservice.service;
 
+import com.ylab.walletservice.aop.annotations.Loggable;
 import com.ylab.walletservice.domain.Player;
 import com.ylab.walletservice.domain.dto.CredentialsDto;
 import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
@@ -13,6 +14,7 @@ import java.util.Optional;
 /**
  * Service class for managing player operations such as registration, authorization, and balance retrieval.
  */
+@Loggable
 public class PlayerService {
     /**
      * The mapper for converting between PlayerDto and Player objects.
@@ -39,10 +41,8 @@ public class PlayerService {
         if (playerRepository.get(registrationData.login()).isEmpty()) {
             Player player = playerMapper.registrationDtoToPlayer(registrationData);
             playerRepository.create(player);
-            LogService.add("New player creation. Success.");
             return true;
         } else {
-            LogService.add("New player creation. Error.");
             return false;
         }
     }
@@ -56,10 +56,8 @@ public class PlayerService {
     public Optional<LoggedInPlayerDto> doAuthorisation(CredentialsDto credentials) {
         Optional<Player> player = playerRepository.get(credentials.login());
         if (player.isPresent() && (player.get().getPassword().equals(credentials.password()))) {
-            LogService.add("Player with login " + credentials.login() + "success authorization.");
             return Optional.of(playerMapper.playerToLoggedInPlayerDto(player.get()));
         } else {
-            LogService.add("Player with login " + credentials.login() + " authorization failed.");
             return Optional.empty();
         }
     }
@@ -71,7 +69,6 @@ public class PlayerService {
      * @return The balance of the player.
      */
     public BigDecimal getBalance(long playerId) {
-        LogService.add("Player with id =  " + playerId + " check balance.");
         return playerRepository.getBalance(playerId);
     }
 
@@ -82,7 +79,7 @@ public class PlayerService {
      * @param balance The new balance to be set for the player.
      * @throws RuntimeException If there is an error updating the balance in the database.
      */
-    public void setBalance(long id, BigDecimal balance) {
+    void setBalance(long id, BigDecimal balance) {
         LogService.add("Player with id =  " + id + " update balance.");
         playerRepository.updateBalance(id, balance);
     }

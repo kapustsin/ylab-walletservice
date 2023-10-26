@@ -1,6 +1,7 @@
 package com.ylab.walletservice.presentation.in.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ylab.walletservice.aop.annotations.Loggable;
 import com.ylab.walletservice.domain.dto.RegistrationDto;
 import com.ylab.walletservice.service.PlayerService;
 import jakarta.servlet.ServletConfig;
@@ -14,6 +15,7 @@ import java.io.IOException;
 
 import static java.util.stream.Collectors.joining;
 
+@Loggable
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
     private ObjectMapper objectMapper;

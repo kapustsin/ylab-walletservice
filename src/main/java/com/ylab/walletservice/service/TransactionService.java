@@ -45,7 +45,6 @@ public class TransactionService {
                 long id = transactionRepository.create(transaction);
                 playerService.setBalance(transactionRequest.creatorId(),
                         playerService.getBalance(transactionRequest.creatorId()).subtract(transactionRequest.amount()));
-                LogService.add("Debit transaction success. Id = " + id);
                 return true;
             } else if ("credit".equals(transactionRequest.type())) {
                 Transaction transaction = new Transaction();
@@ -53,16 +52,11 @@ public class TransactionService {
                 long id = transactionRepository.create(transaction);
                 playerService.setBalance(transactionRequest.creatorId(),
                         playerService.getBalance(transactionRequest.creatorId()).add(transactionRequest.amount()));
-                LogService.add("Credit transaction success. Id = " + id);
                 return true;
             } else {
-                LogService.add("Create transaction failed. Token = " + transactionRequest.token() + ", player id = " +
-                        transactionRequest.creatorId() +
-                        ", amount = " + transactionRequest.amount() + ", type = " + transactionRequest.type());
                 return false;
             }
         } else {
-            LogService.add("Create transaction failed. Token = " + transactionRequest.token() + " not unique.");
             return false;
         }
     }
@@ -74,7 +68,6 @@ public class TransactionService {
      * @return The list of transaction history.
      */
     public List<Transaction> getHistory(long playerId) {
-        LogService.add("User get transaction history");
         return transactionRepository.getHistory(playerId);
     }
 
@@ -87,19 +80,7 @@ public class TransactionService {
      */
     private boolean checkDebit(long playerId, BigDecimal amount) {
         BigDecimal balance = playerService.getBalance(playerId);
-        LogService.add("User check balance = " + balance.toString());
         return balance.subtract(amount).compareTo(BigDecimal.ZERO) >= 0;
-    }
-
-    /**
-     * Generates a unique transaction token for new transactions.
-     *
-     * @return The generated token.
-     */
-    private long generateTransactionToken() {
-        LogService.add("New transaction token generated.");
-        Random random = new Random();
-        return Math.abs(random.nextLong());
     }
 
     /**
@@ -109,7 +90,6 @@ public class TransactionService {
      * @return true if the ID is unique, false otherwise.
      */
     private boolean isTransactionTokenUnique(long id) {
-        LogService.add("Check transaction unique id.");
         return transactionRepository.isTransactionTokenUnique(id);
     }
 }
