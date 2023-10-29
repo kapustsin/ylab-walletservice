@@ -6,13 +6,14 @@ import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
 import com.ylab.walletservice.service.PlayerService;
 import com.ylab.walletservice.service.utils.JwtService;
 import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
@@ -58,8 +59,11 @@ public class AuthorisationServlet extends HttpServlet {
                     LoggedInPlayerDto playerDto = player.get();
                     req.getSession().setAttribute("Player", playerDto);
                     resp.setStatus(HttpServletResponse.SC_OK);
-                    resp.addHeader("Authorization", "Bearer " + jwtService.generateToken(playerDto));
-                    resp.getOutputStream().write(objectMapper.writeValueAsBytes("Success authorization!"));
+                    Map<String, String> responseMap = new HashMap<>();
+                    responseMap.put("Token", jwtService.generateToken(playerDto));
+                    responseMap.put("Message", "Success authorization!");
+                    resp.getWriter().write(objectMapper.writeValueAsString(responseMap));
+                    System.out.println(222);
                 } else {
                     resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     resp.getOutputStream().write(objectMapper.writeValueAsBytes("Authorization failed!"));

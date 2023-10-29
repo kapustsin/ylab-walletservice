@@ -7,7 +7,6 @@ import com.ylab.walletservice.repository.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Service class for managing transaction operations such as creating transactions and retrieving transaction history.
