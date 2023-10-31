@@ -2,15 +2,26 @@ package com.ylab.walletservice.repository;
 
 import com.ylab.walletservice.domain.Transaction;
 import com.ylab.walletservice.repository.impl.JdbcTransactionRepository;
+import com.ylab.walletservice.repository.utils.ConnectionManager;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,41 +31,59 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 public class TransactionRepositoryTest {
+    private static final String SCHEMA_LIQUIBASE = "liquibase";
+    private static final String SCHEMA_ENTITY = "walletservice";
+    private static final String CHANGELOG_PATH = "db/changelog/changelog.xml";
+    private static final String ENV_NAME = "TEST_CONTAINER";
+    private static final String CONTAINER = "postgres:15";
+    private static final String DB_USER = "test";
+    private static final String DB_PASSWORD = "test";
 
     @Container
-    private static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest")
-            .withDatabaseName("testdb")
-            .withUsername("testuser")
-            .withPassword("testpassword");
-
+    private static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>(CONTAINER)
+            .withDatabaseName(SCHEMA_ENTITY)
+            .withUsername(DB_USER)
+            .withPassword(DB_PASSWORD);
+    private static final ConnectionManager connectionManager = ConnectionManager.getInstance();
     private JdbcTransactionRepository transactionRepository;
 
     @BeforeAll
     public static void setUp() {
         postgresContainer.start();
-        String jdbcUrl = postgresContainer.getJdbcUrl();
-        String username = postgresContainer.getUsername();
-        String password = postgresContainer.getPassword();
-        System.setProperty("TEST_DB_URL", jdbcUrl);
-        System.setProperty("TEST_DB_USERNAME", username);
-        System.setProperty("TEST_DB_PASSWORD", password);
+        System.setProperty("CUSTOM_ENV", ENV_NAME);
+        System.setProperty("TEST_CONTAINER_URL", postgresContainer.getJdbcUrl());
+        System.setProperty("TEST_CONTAINER_USERNAME", postgresContainer.getUsername());
+        System.setProperty("TEST_CONTAINER_PASSWORD", postgresContainer.getPassword());
+        System.setProperty("TEST_CONTAINER_DRIVER", postgresContainer.getDriverClassName());
     }
 
     @AfterAll
-    public static void tearDown() {
+    public static void shutDown() {
         postgresContainer.stop();
     }
 
     @BeforeEach
     public void initializeRepository() {
-        transactionRepository = new JdbcTransactionRepository();
+        try (Connection connection = connectionManager.getConnection()) {
+            connection.createStatement().executeUpdate("CREATE SCHEMA " + SCHEMA_LIQUIBASE);
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
+                    new JdbcConnection(connection));
+            database.setLiquibaseSchemaName(SCHEMA_LIQUIBASE);
+            Liquibase liquibase = new Liquibase(CHANGELOG_PATH, new ClassLoaderResourceAccessor(),
+                    database);
+            liquibase.update();
+            transactionRepository = new JdbcTransactionRepository();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @Test
-    public void testCreateTransaction() {
-        Transaction transaction = new Transaction(12345, 1, 100L, BigDecimal.valueOf(50.0), "credit");
-        long transactionId = transactionRepository.create(transaction);
-        assertTrue(transactionId > 0);
+    @AfterEach
+    public void tearDown() throws SQLException {
+        try (Statement statement = connectionManager.getConnection().createStatement()) {
+            statement.executeUpdate("DROP SCHEMA " + SCHEMA_LIQUIBASE + " CASCADE");
+            statement.executeUpdate("DROP SCHEMA " + SCHEMA_ENTITY + " CASCADE");
+        }
     }
 
     @Test
@@ -65,6 +94,20 @@ public class TransactionRepositoryTest {
         Optional<Transaction> retrievedTransaction = transactionRepository.get(transactionId);
         assertTrue(retrievedTransaction.isPresent());
         assertEquals(transactionId, retrievedTransaction.get().getId());
+    }
+
+    @Test
+    public void testGetNonExistingTransaction() {
+        long nonExistingTransactionId = 999999L;
+        Optional<Transaction> retrievedTransaction = transactionRepository.get(nonExistingTransactionId);
+        assertFalse(retrievedTransaction.isPresent());
+    }
+
+    @Test
+    public void testCreateTransaction() {
+        Transaction transaction = new Transaction(12345, 1, 100L, BigDecimal.valueOf(50.0), "credit");
+        long transactionId = transactionRepository.create(transaction);
+        assertTrue(transactionId > 0);
     }
 
     @Test
@@ -79,15 +122,36 @@ public class TransactionRepositoryTest {
     }
 
     @Test
+    public void testIsTransactionTokenNotUnique() {
+        long nonUniqueToken = 345L;
+
+        Transaction transaction1 = new Transaction(1, 345, 101L, BigDecimal.valueOf(30.0), "debit");
+        Transaction transaction2 = new Transaction(2, 346, 102L, BigDecimal.valueOf(40.0), "credit");
+
+        transactionRepository.create(transaction1);
+        transactionRepository.create(transaction2);
+
+        assertFalse(transactionRepository.isTransactionTokenUnique(nonUniqueToken));
+    }
+
+    @Test
     public void testGetTransactionHistory() {
-        long playerId = 100L;
-        Transaction transaction1 = new Transaction(111, playerId, 1L, BigDecimal.valueOf(50.0), "credit");
-        Transaction transaction2 = new Transaction(222, playerId, 1L, BigDecimal.valueOf(30.0), "debit");
+        long playerId = 8L;
+        Transaction transaction1 = new Transaction(111, playerId, 8L, BigDecimal.valueOf(50.0), "credit");
+        Transaction transaction2 = new Transaction(222, playerId, 8L, BigDecimal.valueOf(30.0), "debit");
 
         transactionRepository.create(transaction1);
         transactionRepository.create(transaction2);
 
         List<Transaction> transactions = transactionRepository.getHistory(playerId);
         assertEquals(2, transactions.size());
+    }
+
+    @Test
+    public void testGetTransactionHistoryForPlayerWithoutTransactions() {
+        long playerId = 9L;
+
+        List<Transaction> transactions = transactionRepository.getHistory(playerId);
+        assertTrue(transactions.isEmpty());
     }
 }

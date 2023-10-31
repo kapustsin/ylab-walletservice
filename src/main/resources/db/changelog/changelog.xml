@@ -5,6 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
 
+    <include file="create-schema.xml" relativeToChangelogFile="true"/>
+    <include file="changeset-create-sequence.xml" relativeToChangelogFile="true"/>
     <include file="changeset-create-table-player.xml" relativeToChangelogFile="true"/>
     <include file="changeset-create-table-transaction.xml" relativeToChangelogFile="true"/>
     <include file="changeset-insert-table-player.xml" relativeToChangelogFile="true"/>

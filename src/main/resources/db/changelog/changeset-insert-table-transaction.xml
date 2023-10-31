@@ -7,63 +7,63 @@
 
     <changeSet id="insert-table-transaction" author="A.Kapustsin">
 
-        <insert tableName="transaction">
+        <insert schemaName="walletservice" tableName="transaction">
             <column name="token" value="3712510242892153222"/>
             <column name="creator_id" value="1"/>
             <column name="amount" value="6"/>
             <column name="type" value="credit"/>
         </insert>
 
-        <insert tableName="transaction">
+        <insert schemaName="walletservice" tableName="transaction">
             <column name="token" value="8615873619394213736"/>
             <column name="creator_id" value="1"/>
             <column name="amount" value="5.5"/>
             <column name="type" value="debit"/>
         </insert>
 
-        <insert tableName="transaction">
+        <insert schemaName="walletservice" tableName="transaction">
             <column name="token" value="2190637812867312334"/>
             <column name="creator_id" value="2"/>
             <column name="amount" value="22.7"/>
             <column name="type" value="credit"/>
         </insert>
 
-        <insert tableName="transaction">
+        <insert schemaName="walletservice" tableName="transaction">
             <column name="token" value="2299919534288055537"/>
             <column name="creator_id" value="1"/>
             <column name="amount" value="9.5"/>
             <column name="type" value="credit"/>
         </insert>
 
-        <insert tableName="transaction">
+        <insert schemaName="walletservice" tableName="transaction">
             <column name="token" value="3563269850731446882"/>
             <column name="creator_id" value="2"/>
             <column name="amount" value="18.1"/>
             <column name="type" value="debit"/>
         </insert>
 
-        <insert tableName="transaction">
+        <insert schemaName="walletservice" tableName="transaction">
             <column name="token" value="2670577002427800714"/>
             <column name="creator_id" value="4"/>
             <column name="amount" value="5"/>
             <column name="type" value="credit"/>
         </insert>
 
-        <insert tableName="transaction">
+        <insert schemaName="walletservice" tableName="transaction">
             <column name="token" value="3563269850731446882"/>
             <column name="creator_id" value="2"/>
             <column name="amount" value="0.3"/>
             <column name="type" value="debit"/>
         </insert>
 
-        <insert tableName="transaction">
+        <insert schemaName="walletservice" tableName="transaction">
             <column name="token" value="2670577002427800714"/>
             <column name="creator_id" value="4"/>
             <column name="amount" value="3.2"/>
             <column name="type" value="debit"/>
         </insert>
 
-        <insert tableName="transaction">
+        <insert schemaName="walletservice" tableName="transaction">
             <column name="token" value="521684776221335275"/>
             <column name="creator_id" value="4"/>
             <column name="amount" value="1.8"/>

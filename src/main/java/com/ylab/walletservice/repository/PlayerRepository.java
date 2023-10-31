@@ -28,6 +28,14 @@ public interface PlayerRepository {
     Optional<Player> get(String login);
 
     /**
+     * Retrieves the balance of a player based on their ID.
+     *
+     * @param playerId ID of the player.
+     * @return The balance of the player as a {@code BigDecimal} value.
+     */
+    BigDecimal getBalance(long playerId);
+
+    /**
      * Updates the balance of a player with the given ID.
      *
      * @param id      The ID of the player whose balance needs to be updated.
