@@ -2,8 +2,8 @@ package com.ylab.walletservice.repository.impl;
 
 import com.ylab.walletservice.domain.Player;
 import com.ylab.walletservice.repository.PlayerRepository;
-import com.ylab.walletservice.repository.utils.ConnectionManager;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,16 +13,19 @@ import java.sql.Statement;
 import java.util.Optional;
 
 public class JdbcPlayerRepository implements PlayerRepository {
-    private final ConnectionManager connectionManager;
+    private final DataSource dataSource;
 
-    public JdbcPlayerRepository() {
-        this.connectionManager = ConnectionManager.getInstance();
+    public JdbcPlayerRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public Connection getConnection() {
-        return connectionManager.getConnection();
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long create(Player player) {
         final String SQL_CREATE = """
@@ -43,6 +46,9 @@ public class JdbcPlayerRepository implements PlayerRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Player> get(String login) {
         final String SQL_SELECT_BY_LOGIN = """
@@ -65,6 +71,9 @@ public class JdbcPlayerRepository implements PlayerRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BigDecimal getBalance(long playerId) {
         final String SQL_SELECT_BALANCE_BY_ID = """
@@ -82,6 +91,9 @@ public class JdbcPlayerRepository implements PlayerRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateBalance(long id, BigDecimal balance) {
         final String SQL_UPDATE_BALANCE = """

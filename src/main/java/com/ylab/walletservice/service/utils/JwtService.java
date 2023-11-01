@@ -37,18 +37,17 @@ public class JwtService {
     }
 
     /**
-     * Checks if the provided token is valid for the given logged-in player.
+     * Checks if the provided token is valid.
      *
      * @param token The JWT token to validate.
-     * @param dto   The logged-in player's data.
      * @return True if the token is valid, false otherwise.
      */
-    public boolean isValid(String token, LoggedInPlayerDto dto) {
+    public boolean isValid(String token) {
         try {
             Claims claims = extractClaim(token);
             return token != null &&
-                    !token.trim().isEmpty() && claims.getSubject().equals(dto.login()) &&
-                    claims.get("id", Long.class) == dto.id();
+                    !token.trim().isEmpty() && claims.getSubject() != null &&
+                    claims.get("id", Long.class) != null;
         } catch (ExpiredJwtException e) {
             return false;
         } catch (JwtException e) {
@@ -62,7 +61,7 @@ public class JwtService {
      * @param token The JWT token.
      * @return The extracted claims.
      */
-    private Claims extractClaim(String token) {
+    public Claims extractClaim(String token) {
         return Jwts.parser()
                 .verifyWith(generateHmacKey())
                 .build().parseSignedClaims(token).getPayload();

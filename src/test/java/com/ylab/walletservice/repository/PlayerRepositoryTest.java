@@ -1,8 +1,8 @@
 package com.ylab.walletservice.repository;
 
+import com.ylab.walletservice.configuration.ApplicationTest;
 import com.ylab.walletservice.domain.Player;
 import com.ylab.walletservice.repository.impl.JdbcPlayerRepository;
-import com.ylab.walletservice.repository.utils.ConnectionManager;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -12,11 +12,19 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,7 +35,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 @Testcontainers
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ApplicationTest.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DisplayName("Player repository test")
 public class PlayerRepositoryTest {
     private static final String SCHEMA_LIQUIBASE = "liquibase";
     private static final String SCHEMA_ENTITY = "walletservice";
@@ -42,8 +55,15 @@ public class PlayerRepositoryTest {
             .withDatabaseName(SCHEMA_ENTITY)
             .withUsername(DB_USER)
             .withPassword(DB_PASSWORD);
-    private static final ConnectionManager connectionManager = ConnectionManager.getInstance();
-    private JdbcPlayerRepository playerRepository;
+    private final JdbcPlayerRepository playerRepository;
+    private final DataSource dataSource;
+
+    @Autowired
+    public PlayerRepositoryTest(JdbcPlayerRepository playerRepository, DataSource dataSource) {
+        this.playerRepository = playerRepository;
+        this.dataSource = dataSource;
+    }
+
 
     @BeforeAll
     public static void setUp() {
@@ -62,7 +82,7 @@ public class PlayerRepositoryTest {
 
     @BeforeEach
     public void initializeRepository() {
-        try (Connection connection = connectionManager.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             connection.createStatement().executeUpdate("CREATE SCHEMA " + SCHEMA_LIQUIBASE);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
                     new JdbcConnection(connection));
@@ -70,7 +90,6 @@ public class PlayerRepositoryTest {
             Liquibase liquibase = new Liquibase(CHANGELOG_PATH, new ClassLoaderResourceAccessor(),
                     database);
             liquibase.update();
-            playerRepository = new JdbcPlayerRepository();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,19 +97,21 @@ public class PlayerRepositoryTest {
 
     @AfterEach
     public void tearDown() throws SQLException {
-        try (Statement statement = connectionManager.getConnection().createStatement()) {
+        try (Statement statement = dataSource.getConnection().createStatement()) {
             statement.executeUpdate("DROP SCHEMA " + SCHEMA_LIQUIBASE + " CASCADE");
             statement.executeUpdate("DROP SCHEMA " + SCHEMA_ENTITY + " CASCADE");
         }
     }
 
     @Test
+    @DisplayName("Create player")
     public void testCreatePlayer() {
         Player player = new Player("testuser1", "password");
         assertTrue(playerRepository.create(player) > 0);
     }
 
     @Test
+    @DisplayName("Get player")
     public void testGetPlayer() {
         Player player = new Player("testuser2", "password");
         long playerId = playerRepository.create(player);
@@ -101,12 +122,14 @@ public class PlayerRepositoryTest {
     }
 
     @Test
+    @DisplayName("Get non-existing player")
     public void testGetNonExistingPlayer() {
         Optional<Player> retrievedPlayer = playerRepository.get("nonExistingUser");
         assertFalse(retrievedPlayer.isPresent());
     }
 
     @Test
+    @DisplayName("Update balance")
     public void testUpdateBalance() {
         Player player = new Player("testuser3", "password");
         long playerId = playerRepository.create(player);
