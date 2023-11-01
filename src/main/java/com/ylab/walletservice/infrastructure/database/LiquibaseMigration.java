@@ -1,11 +1,15 @@
 package com.ylab.walletservice.infrastructure.database;
 
+import com.ylab.walletservice.configuration.utils.YamlFactory;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -16,8 +20,20 @@ import java.sql.Statement;
 /**
  * Initializing the database schema using Liquibase migrations.
  */
+@PropertySources({
+        @PropertySource(value = "classpath:application.yml", factory = YamlFactory.class)
+})
 public class LiquibaseMigration {
     final private DataSource dataSource;
+
+    @Value("${liquibase.changeLogFile}")
+    private String changeLogFile;
+
+    @Value("${liquibase.liquibaseSchemaName}")
+    private String liquibaseSchemaName;
+
+    @Value("${liquibase.defaultSchemaName}")
+    private String defaultSchemaName;
 
     /**
      * Constructs a new LiquibaseMigration with the specified DataSource.
@@ -43,11 +59,11 @@ public class LiquibaseMigration {
 
             Database database = DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(new JdbcConnection(connection));
-            database.setLiquibaseSchemaName("liquibase");
+            database.setLiquibaseSchemaName(liquibaseSchemaName);
 
-            Liquibase liquibase = new Liquibase("db/changelog/changelog.xml",
+            Liquibase liquibase = new Liquibase(changeLogFile,
                     new ClassLoaderResourceAccessor(), database);
-            liquibase.getDatabase().setDefaultSchemaName("walletservice");
+            liquibase.getDatabase().setDefaultSchemaName(defaultSchemaName);
             liquibase.update();
         } catch (SQLException | LiquibaseException e) {
             throw new RuntimeException(e);

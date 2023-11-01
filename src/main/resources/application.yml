@@ -1,0 +1,21 @@
+# Common
+common:
+  url: jdbc:postgresql://localhost:5432/walletservice
+  username: postgres
+  password: "999111"
+
+# Docker DB
+#dockerdb:
+#  url: jdbc:postgresql://localhost:2345/dockerdb
+#  username: admin
+#  password: admin
+
+# JDBC
+jdbc:
+  driver: org.postgresql.Driver
+
+# Liquibase
+liquibase:
+  changeLogFile: db/changelog/changelog.xml
+  defaultSchemaName: walletservice
+  liquibaseSchemaName: liquibase

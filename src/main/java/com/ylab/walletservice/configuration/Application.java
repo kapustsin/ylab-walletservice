@@ -2,6 +2,7 @@ package com.ylab.walletservice.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.ylab.walletservice.configuration.utils.YamlFactory;
 import com.ylab.walletservice.infrastructure.database.LiquibaseMigration;
 import com.ylab.walletservice.presentation.handler.TokenValidationInterceptor;
 import com.ylab.walletservice.repository.PlayerRepository;
@@ -11,8 +12,11 @@ import com.ylab.walletservice.repository.impl.JdbcTransactionRepository;
 import com.ylab.walletservice.service.PlayerService;
 import com.ylab.walletservice.service.TransactionService;
 import com.ylab.walletservice.service.utils.JwtService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -27,7 +31,22 @@ import javax.sql.DataSource;
  * Configuration class for initializing the Spring application.
  */
 @Configuration
+@PropertySources({
+        @PropertySource(value = "classpath:application.yml", factory = YamlFactory.class)
+})
 public class Application implements WebApplicationInitializer {
+    @Value("${common.url}")
+    private String url;
+
+    @Value("${common.username}")
+    private String user;
+
+    @Value("${common.password}")
+    private String password;
+
+    @Value("${jdbc.driver}")
+    private String driver;
+
     /**
      * Configures the application when it starts up.
      *
@@ -42,6 +61,22 @@ public class Application implements WebApplicationInitializer {
         ServletRegistration.Dynamic customDispatcherServlet = servletContext.addServlet("dispatcherServlet", servlet);
         customDispatcherServlet.setLoadOnStartup(1);
         customDispatcherServlet.addMapping("/");
+    }
+
+    /**
+     * Creates a DataSource bean for database connection.
+     *
+     * @return Instance of DataSource.
+     */
+
+    @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setUrl(url);
+        dataSource.setUsername(user);
+        dataSource.setPassword(password);
+        dataSource.setDriverClassName(driver);
+        return dataSource;
     }
 
     /**
@@ -81,7 +116,6 @@ public class Application implements WebApplicationInitializer {
      */
     @Bean
     TransactionService transactionService() {
-        System.out.println("created!!!");
         return new TransactionService(jdbcTransactionRepository(), playerService());
     }
 
@@ -105,21 +139,6 @@ public class Application implements WebApplicationInitializer {
     @Bean
     JwtService jwtService() {
         return new JwtService();
-    }
-
-    /**
-     * Creates a DataSource bean for database connection.
-     *
-     * @return Instance of DataSource.
-     */
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/walletservice");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("999111");
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        return dataSource;
     }
 
     /**
