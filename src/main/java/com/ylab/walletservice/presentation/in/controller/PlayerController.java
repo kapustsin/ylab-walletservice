@@ -5,6 +5,8 @@ import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
 import com.ylab.walletservice.domain.dto.RegistrationDto;
 import com.ylab.walletservice.service.PlayerService;
 import com.ylab.walletservice.service.utils.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,8 @@ import java.util.Optional;
 /**
  * Controller class handling player-related HTTP requests.
  */
+@Tag(name = "player-controller",
+        description = "Endpoints for player authentication, authorization, and balance management.")
 @RestController
 @RequestMapping("/api/player")
 public class PlayerController {
@@ -44,6 +48,7 @@ public class PlayerController {
      * @param credentials The CredentialsDto object containing user credentials from the request body.
      * @return ResponseEntity with a JSON message indicating the authorization status and, if successful, a JWT token.
      */
+    @Operation(summary = "Authenticate player and generate JWT token.")
     @PostMapping("/authorisation")
     public ResponseEntity<String> doAuthorisation(@RequestBody CredentialsDto credentials) {
         try {
@@ -71,6 +76,7 @@ public class PlayerController {
      * @param registrationData The RegistrationDto object containing user registration data from the request body.
      * @return ResponseEntity with a JSON message indicating the registration status.
      */
+    @Operation(summary = "Register a new player.")
     @PostMapping("/registration")
     public ResponseEntity<String> doRegistration(@RequestBody RegistrationDto registrationData) {
         try {
@@ -95,6 +101,7 @@ public class PlayerController {
      * @param player The LoggedInPlayerDto object representing the logged-in player.
      * @return ResponseEntity with a JSON message containing the player's balance.
      */
+    @Operation(summary = "Get player's balance.")
     @GetMapping("/balance")
     public ResponseEntity<String> getBalance(@RequestAttribute LoggedInPlayerDto player) {
         try {

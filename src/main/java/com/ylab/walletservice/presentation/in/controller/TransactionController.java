@@ -3,9 +3,9 @@ package com.ylab.walletservice.presentation.in.controller;
 import com.ylab.walletservice.domain.Transaction;
 import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
 import com.ylab.walletservice.domain.dto.TransactionRequestDto;
-import com.ylab.walletservice.service.PlayerService;
 import com.ylab.walletservice.service.TransactionService;
-import com.ylab.walletservice.service.utils.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,26 +20,19 @@ import java.util.List;
 /**
  * Controller class handling transactions-related HTTP requests.
  */
+@Tag(name = "transaction-controller", description = "Endpoints for managing player transactions.")
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
-    private final PlayerService playerService;
     private final TransactionService transactionService;
-    private final JwtService jwtService;
 
     /**
-     * Constructs a new TransactionController with the specified PlayerService, TransactionService,
-     * and JwtService instances.
+     * Constructs a new TransactionController with the specified TransactionService instance.
      *
-     * @param playerService     The PlayerService instance responsible for player-related operations.
      * @param transactionService The TransactionService instance responsible for transaction-related operations.
-     * @param jwtService        The JwtService instance responsible for generating JWT tokens.
      */
-    public TransactionController(PlayerService playerService, TransactionService transactionService,
-            JwtService jwtService) {
-        this.playerService = playerService;
+    public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
-        this.jwtService = jwtService;
     }
 
     /**
@@ -48,6 +41,7 @@ public class TransactionController {
      * @param player The LoggedInPlayerDto object representing the logged-in player.
      * @return ResponseEntity containing a list of Transaction objects representing the player's transaction history.
      */
+    @Operation(summary = "Get transaction history of the logged-in player.")
     @GetMapping("/history")
     public ResponseEntity<List<Transaction>> getHistory(@RequestAttribute LoggedInPlayerDto player) {
         try {
@@ -64,6 +58,7 @@ public class TransactionController {
      * @param transactionRequest The TransactionRequestDto object containing transaction request data from the request body.
      * @return ResponseEntity with a JSON message indicating the transaction creation status.
      */
+    @Operation(summary = "Create a new transaction for the logged-in player.")
     @PostMapping("/create")
     public ResponseEntity<String> createTransaction(@RequestAttribute LoggedInPlayerDto player, @RequestBody
     TransactionRequestDto transactionRequest) {
