@@ -30,6 +30,7 @@
         <spring.version>5.3.30</spring.version>
         <javax-annotation-api.version>1.3.2</javax-annotation-api.version>
         <snakeyaml.version>2.2</snakeyaml.version>
+        <springfox-swagger.version>3.0.0</springfox-swagger.version>
     </properties>
 
     <dependencies>
@@ -158,6 +159,18 @@
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>${snakeyaml.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox-swagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-oas</artifactId>
+            <version>${springfox-swagger.version}</version>
         </dependency>
 
     </dependencies>

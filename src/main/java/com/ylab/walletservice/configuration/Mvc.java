@@ -5,11 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -44,16 +43,6 @@ public class Mvc implements WebMvcConfigurer {
     }
 
     /**
-     * Configures path matching options.
-     *
-     * @param configurer PathMatchConfigurer object.
-     */
-    @Override
-    public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.addPathPrefix("/api", HandlerTypePredicate.forAnnotation(RestController.class));
-    }
-
-    /**
      * Adds interceptors for handling incoming requests.
      *
      * @param registry InterceptorRegistry object.
@@ -63,5 +52,28 @@ public class Mvc implements WebMvcConfigurer {
         registry.addInterceptor(tokenValidationInterceptor)
                 .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/player/registration", "/api/player/authorisation");
+    }
+
+    /**
+     * Configures resource handlers for Swagger UI.
+     *
+     * @param registry The resource handler registry to which settings for Swagger UI are added.
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/swagger-ui/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
+                .resourceChain(false);
+    }
+
+    /**
+     * Configures view controllers for Swagger UI.
+     *
+     * @param registry The view controller registry to which settings for Swagger UI are added.
+     */
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/swagger-ui/")
+                .setViewName("forward:" + "/swagger-ui/index.html");
     }
 }

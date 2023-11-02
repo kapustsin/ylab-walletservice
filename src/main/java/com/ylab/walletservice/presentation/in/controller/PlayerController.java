@@ -20,7 +20,7 @@ import java.util.Optional;
  * Controller class handling player-related HTTP requests.
  */
 @RestController
-@RequestMapping("/player")
+@RequestMapping("/api/player")
 public class PlayerController {
     private final PlayerService playerService;
     private final JwtService jwtService;

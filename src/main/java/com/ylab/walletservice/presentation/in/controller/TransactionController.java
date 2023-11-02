@@ -21,7 +21,7 @@ import java.util.List;
  * Controller class handling transactions-related HTTP requests.
  */
 @RestController
-@RequestMapping("/transactions")
+@RequestMapping("/api/transactions")
 public class TransactionController {
     private final PlayerService playerService;
     private final TransactionService transactionService;
