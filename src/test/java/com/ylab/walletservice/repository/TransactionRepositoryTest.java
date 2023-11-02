@@ -3,7 +3,6 @@ package com.ylab.walletservice.repository;
 import com.ylab.walletservice.configuration.ApplicationTest;
 import com.ylab.walletservice.domain.Transaction;
 import com.ylab.walletservice.repository.impl.JdbcTransactionRepository;
-import liquibase.Contexts;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;

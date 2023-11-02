@@ -53,7 +53,7 @@ public class LiquibaseMigration {
                 CREATE SCHEMA IF NOT EXISTS
                 """ + liquibaseSchemaName;
         try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement();
+             Statement statement = connection.createStatement()
         ) {
             statement.executeUpdate(SQL_CREATE_SCHEMA);
 
