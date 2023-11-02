@@ -24,7 +24,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 @Disabled
-@DisplayName("Transaction service test")
+@DisplayName("Transaction service tests")
 class TransactionServiceTest {
     @Mock
     private TransactionRepository transactionRepository;

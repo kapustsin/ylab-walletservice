@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ApplicationTest.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@DisplayName("Transaction repository test")
+@DisplayName("Transaction repository tests")
 public class TransactionRepositoryTest {
     private static final String SCHEMA_LIQUIBASE = "liquibase";
     private static final String SCHEMA_ENTITY = "walletservice";

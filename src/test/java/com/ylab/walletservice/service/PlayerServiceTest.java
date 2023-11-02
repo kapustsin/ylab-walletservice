@@ -27,7 +27,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 @Disabled
-@DisplayName("Player service test")
+@DisplayName("Player service tests")
 public class PlayerServiceTest {
     @Mock
     private PlayerRepository playerRepository;
@@ -77,7 +77,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Do authorization success")
+    @DisplayName("Authorization success")
     public void testDoAuthorizationSuccess() {
         String userLogin = "user123";
         String password = "password123";
@@ -96,7 +96,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Do authorization failure")
+    @DisplayName("Authorization failure")
     public void testDoAuthorizationFailure() {
         String nonExistingUserLogin = "nonExistingUser";
         String wrongPassword = "wrongPassword";

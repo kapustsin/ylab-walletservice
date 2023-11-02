@@ -16,6 +16,7 @@
 
         <junit-jupiter-engine.version>5.10.0</junit-jupiter-engine.version>
         <mockito.version>5.6.0</mockito.version>
+        <jsonassert.version>1.5.1</jsonassert.version>
         <postgresql.version>42.6.0</postgresql.version>
         <liquibase.version>4.24.0</liquibase.version>
         <testcontainers.version>1.19.1</testcontainers.version>
@@ -46,6 +47,20 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>${jsonassert.version}</version>
             <scope>test</scope>
         </dependency>
 

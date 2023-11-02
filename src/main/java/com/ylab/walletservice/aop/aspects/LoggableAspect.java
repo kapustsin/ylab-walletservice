@@ -12,7 +12,6 @@ import org.aspectj.lang.annotation.Pointcut;
  */
 @Aspect
 public class LoggableAspect {
-
     /**
      * Pointcut expression to match methods annotated with {@link com.ylab.walletservice.aop.annotations.Loggable}.
      */
