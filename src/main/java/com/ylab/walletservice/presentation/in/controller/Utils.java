@@ -1,4 +1,4 @@
-package com.ylab.walletservice.presentation.in.servlet;
+package com.ylab.walletservice.presentation.in.controller;
 
 import com.ylab.walletservice.domain.dto.CredentialsDto;
 import com.ylab.walletservice.domain.dto.RegistrationDto;
@@ -17,7 +17,7 @@ public class Utils {
      * @return {@code true} if the credentials are valid, {@code false} otherwise.
      */
     static boolean isValid(CredentialsDto dto) {
-        return dto != null &&
+        return  dto != null &&
                 dto.login() != null && !dto.login().trim().isEmpty() &&
                 dto.password() != null && !dto.password().trim().isEmpty();
     }

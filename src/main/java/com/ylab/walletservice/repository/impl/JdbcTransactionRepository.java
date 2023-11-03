@@ -2,8 +2,8 @@ package com.ylab.walletservice.repository.impl;
 
 import com.ylab.walletservice.domain.Transaction;
 import com.ylab.walletservice.repository.TransactionRepository;
-import com.ylab.walletservice.repository.utils.ConnectionManager;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,16 +15,19 @@ import java.util.List;
 import java.util.Optional;
 
 public class JdbcTransactionRepository implements TransactionRepository {
-    private final ConnectionManager connectionManager;
+    private final DataSource dataSource;
 
-    public JdbcTransactionRepository() {
-        this.connectionManager = ConnectionManager.getInstance();
+    public JdbcTransactionRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public Connection getConnection() {
-        return connectionManager.getConnection();
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Transaction> get(long id) {
         final String SQL_SELECT_BY_ID = """
@@ -49,6 +52,9 @@ public class JdbcTransactionRepository implements TransactionRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long create(Transaction transaction) {
         final String SQL_CREATE = """
@@ -71,6 +77,9 @@ public class JdbcTransactionRepository implements TransactionRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isTransactionTokenUnique(long token) {
         final String SQL_SELECT_TOKEN = """
@@ -87,6 +96,9 @@ public class JdbcTransactionRepository implements TransactionRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Transaction> getHistory(long playerId) {
         final String SQL_SELECT_BY_CREATOR_ID = """

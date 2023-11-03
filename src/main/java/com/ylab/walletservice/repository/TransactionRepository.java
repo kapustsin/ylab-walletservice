@@ -40,7 +40,7 @@ public interface TransactionRepository {
      *
      * @param playerId The ID of the player.
      * @return List of Transaction objects representing the player's transaction history,
-     *         ordered chronologically from the latest to the earliest transaction.
+     * ordered chronologically from the latest to the earliest transaction.
      */
-    List<Transaction> getHistory (long playerId);
+    List<Transaction> getHistory(long playerId);
 }

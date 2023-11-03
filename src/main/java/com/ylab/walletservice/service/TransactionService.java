@@ -7,7 +7,6 @@ import com.ylab.walletservice.repository.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Service class for managing transaction operations such as creating transactions and retrieving transaction history.
@@ -42,14 +41,14 @@ public class TransactionService {
                     checkDebit(transactionRequest.creatorId(), transactionRequest.amount())) {
                 Transaction transaction =
                         transactionMapper.transactionDtoToTransaction(transactionRequest, new Transaction());
-                long id = transactionRepository.create(transaction);
+                transactionRepository.create(transaction);
                 playerService.setBalance(transactionRequest.creatorId(),
                         playerService.getBalance(transactionRequest.creatorId()).subtract(transactionRequest.amount()));
                 return true;
             } else if ("credit".equals(transactionRequest.type())) {
                 Transaction transaction = new Transaction();
                 transactionMapper.transactionDtoToTransaction(transactionRequest, transaction);
-                long id = transactionRepository.create(transaction);
+                transactionRepository.create(transaction);
                 playerService.setBalance(transactionRequest.creatorId(),
                         playerService.getBalance(transactionRequest.creatorId()).add(transactionRequest.amount()));
                 return true;

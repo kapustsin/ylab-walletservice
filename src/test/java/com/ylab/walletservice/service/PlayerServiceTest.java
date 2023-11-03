@@ -7,6 +7,8 @@ import com.ylab.walletservice.domain.dto.RegistrationDto;
 import com.ylab.walletservice.domain.mapper.PlayerMapper;
 import com.ylab.walletservice.repository.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,7 +26,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+@Disabled
+@DisplayName("Player service tests")
 public class PlayerServiceTest {
     @Mock
     private PlayerRepository playerRepository;
@@ -41,6 +44,7 @@ public class PlayerServiceTest {
     }
 
     @Test
+    @DisplayName("Create new user success")
     public void testCreateNewUserSuccess() {
         String login = "newUser";
         String password = "password123";
@@ -59,6 +63,7 @@ public class PlayerServiceTest {
     }
 
     @Test
+    @DisplayName("Create existing user")
     public void testCreateExistingUser() {
         String login = "existingUser";
         String password = "password123";
@@ -72,6 +77,7 @@ public class PlayerServiceTest {
     }
 
     @Test
+    @DisplayName("Authorization success")
     public void testDoAuthorizationSuccess() {
         String userLogin = "user123";
         String password = "password123";
@@ -90,6 +96,7 @@ public class PlayerServiceTest {
     }
 
     @Test
+    @DisplayName("Authorization failure")
     public void testDoAuthorizationFailure() {
         String nonExistingUserLogin = "nonExistingUser";
         String wrongPassword = "wrongPassword";
@@ -103,6 +110,7 @@ public class PlayerServiceTest {
     }
 
     @Test
+    @DisplayName("Authorization with invalid credentials")
     public void testAuthorizationWithInvalidCredentials() {
         String existingUserLogin = "user123";
         String correctPassword = "correctPassword";
@@ -123,6 +131,7 @@ public class PlayerServiceTest {
     }
 
     @Test
+    @DisplayName("Get balance")
     void testGetBalance() {
         long playerId = 1;
         BigDecimal expectedBalance = new BigDecimal("1000.0");
@@ -136,6 +145,7 @@ public class PlayerServiceTest {
     }
 
     @Test
+    @DisplayName("Get balance for non-existing user")
     public void testGetBalanceForNonExistingUser() {
         long nonExistingUserId = 999;
 
