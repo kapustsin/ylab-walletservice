@@ -8,6 +8,7 @@ import com.ylab.walletservice.service.utils.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +50,7 @@ public class PlayerController {
      * @return ResponseEntity with a JSON message indicating the authorization status and, if successful, a JWT token.
      */
     @Operation(summary = "Authenticate player and generate JWT token.")
-    @PostMapping("/authorisation")
+    @PostMapping(value = "/authorisation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> doAuthorisation(@RequestBody CredentialsDto credentials) {
         try {
             if (Utils.isValid(credentials)) {
@@ -77,7 +78,7 @@ public class PlayerController {
      * @return ResponseEntity with a JSON message indicating the registration status.
      */
     @Operation(summary = "Register a new player.")
-    @PostMapping("/registration")
+    @PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> doRegistration(@RequestBody RegistrationDto registrationData) {
         try {
             if (Utils.isValid(registrationData)) {
@@ -102,7 +103,7 @@ public class PlayerController {
      * @return ResponseEntity with a JSON message containing the player's balance.
      */
     @Operation(summary = "Get player's balance.")
-    @GetMapping("/balance")
+    @GetMapping(value = "/balance", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getBalance(@RequestAttribute LoggedInPlayerDto player) {
         try {
             return new ResponseEntity<>("Balance = " + playerService.getBalance(player.id()), HttpStatus.OK);

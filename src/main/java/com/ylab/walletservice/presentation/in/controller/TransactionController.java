@@ -7,6 +7,7 @@ import com.ylab.walletservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,7 @@ public class TransactionController {
      * @return ResponseEntity containing a list of Transaction objects representing the player's transaction history.
      */
     @Operation(summary = "Get transaction history of the logged-in player.")
-    @GetMapping("/history")
+    @GetMapping(value = "/history", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Transaction>> getHistory(@RequestAttribute LoggedInPlayerDto player) {
         try {
             return new ResponseEntity<>(transactionService.getHistory(player.id()), HttpStatus.OK);
@@ -59,7 +60,7 @@ public class TransactionController {
      * @return ResponseEntity with a JSON message indicating the transaction creation status.
      */
     @Operation(summary = "Create a new transaction for the logged-in player.")
-    @PostMapping("/create")
+    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createTransaction(@RequestAttribute LoggedInPlayerDto player, @RequestBody
     TransactionRequestDto transactionRequest) {
         try {

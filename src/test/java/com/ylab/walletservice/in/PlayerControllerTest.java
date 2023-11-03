@@ -1,5 +1,6 @@
 package com.ylab.walletservice.in;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ylab.walletservice.domain.dto.CredentialsDto;
 import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
 import com.ylab.walletservice.domain.dto.RegistrationDto;
@@ -32,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Player controller tests")
 public class PlayerControllerTest {
     private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private PlayerController playerController;
@@ -45,6 +47,7 @@ public class PlayerControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(playerController).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
@@ -58,7 +61,7 @@ public class PlayerControllerTest {
 
         mockMvc.perform(post("/api/player/authorisation")
                         .contentType("application/json")
-                        .content("{\"login\":\"login\",\"password\":\"password\"}"))
+                        .content(objectMapper.writeValueAsString(validCredentials)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("jwt-token"));
 
@@ -75,7 +78,7 @@ public class PlayerControllerTest {
 
         mockMvc.perform(post("/api/player/authorisation")
                         .contentType("application/json")
-                        .content("{\"login\":\"invalidUsername\",\"password\":\"invalidPassword\"}"))
+                        .content(objectMapper.writeValueAsString(invalidCredentials)))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Authorization failed!"));
 
@@ -92,7 +95,7 @@ public class PlayerControllerTest {
 
         mockMvc.perform(post("/api/player/registration")
                         .contentType("application/json")
-                        .content("{\"login\":\"2\",\"password\":\"2\"}"))
+                        .content(objectMapper.writeValueAsString(validRegistrationData)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Success registration!"));
 
@@ -108,7 +111,7 @@ public class PlayerControllerTest {
 
         mockMvc.perform(post("/api/player/registration")
                         .contentType("application/json")
-                        .content("{\"login\":\"3\",\"password\":\"3\"}"))
+                        .content(objectMapper.writeValueAsString(invalidRegistrationData)))
                 .andExpect(status().isConflict())
                 .andExpect(content().string("Registration failed!"));
 
