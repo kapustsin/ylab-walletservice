@@ -4,6 +4,8 @@ import com.ylab.walletservice.domain.Transaction;
 import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
 import com.ylab.walletservice.domain.dto.TransactionRequestDto;
 import com.ylab.walletservice.service.TransactionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import java.util.List;
 /**
  * Controller class handling transactions-related HTTP requests.
  */
+@Tag(name = "transaction-controller", description = "Endpoints for managing player transactions.")
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
@@ -38,6 +41,7 @@ public class TransactionController {
      * @param player The LoggedInPlayerDto object representing the logged-in player.
      * @return ResponseEntity containing a list of Transaction objects representing the player's transaction history.
      */
+    @Operation(summary = "Get transaction history of the logged-in player.")
     @GetMapping(value = "/history")
     public ResponseEntity<List<Transaction>> getHistory(@RequestAttribute LoggedInPlayerDto player) {
         return new ResponseEntity<>(transactionService.getHistory(player.id()), HttpStatus.OK);
@@ -50,6 +54,7 @@ public class TransactionController {
      * @param transactionRequest The TransactionRequestDto object containing transaction request data from the request body.
      * @return ResponseEntity with a JSON message indicating the transaction creation status.
      */
+    @Operation(summary = "Create a new transaction for the logged-in player.")
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTransaction(@RequestAttribute LoggedInPlayerDto player, @RequestBody
     TransactionRequestDto transactionRequest) {
