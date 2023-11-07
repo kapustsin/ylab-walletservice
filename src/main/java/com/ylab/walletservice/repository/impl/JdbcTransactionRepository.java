@@ -2,6 +2,7 @@ package com.ylab.walletservice.repository.impl;
 
 import com.ylab.walletservice.domain.Transaction;
 import com.ylab.walletservice.repository.TransactionRepository;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class JdbcTransactionRepository implements TransactionRepository {
     private final DataSource dataSource;
 

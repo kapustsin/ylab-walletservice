@@ -7,6 +7,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.temporal.ChronoUnit;
@@ -18,6 +19,7 @@ import static java.time.Instant.now;
 /**
  * Service for handling JSON Web Tokens in the application.
  */
+@Service
 public class JwtService {
     private static final String KEY = "8f7d3b21a4972c0f753f4b3b8c144e059d44e848a6c3ef478e72b670648ef42bc0b";
     private static final long TTL = 10;
@@ -46,8 +48,8 @@ public class JwtService {
         try {
             Claims claims = extractClaim(token);
             return token != null &&
-                    !token.trim().isEmpty() && claims.getSubject() != null &&
-                    claims.get("id", Long.class) != null;
+                   !token.trim().isEmpty() && claims.getSubject() != null &&
+                   claims.get("id", Long.class) != null;
         } catch (ExpiredJwtException e) {
             return false;
         } catch (JwtException e) {

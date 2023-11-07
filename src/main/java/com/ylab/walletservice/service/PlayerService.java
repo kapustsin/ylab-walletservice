@@ -7,6 +7,7 @@ import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
 import com.ylab.walletservice.domain.dto.RegistrationDto;
 import com.ylab.walletservice.domain.mapper.PlayerMapper;
 import com.ylab.walletservice.repository.PlayerRepository;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import java.util.Optional;
  * Service class for managing player operations such as registration, authorization, and balance retrieval.
  */
 @Loggable
+@Service
 public class PlayerService {
     /**
      * The mapper for converting between PlayerDto and Player objects.

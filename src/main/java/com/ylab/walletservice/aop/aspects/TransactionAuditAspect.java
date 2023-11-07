@@ -31,14 +31,14 @@ public class TransactionAuditAspect {
         boolean result = (boolean) joinPoint.proceed();
         if (result) {
             LogService.add("Transaction created successfully. Token: " + transactionRequest.token() +
-                    ", Creator ID: " + transactionRequest.creatorId() +
-                    ", Amount: " + transactionRequest.amount() +
-                    ", Type: " + transactionRequest.type());
+                           ", Creator ID: " + transactionRequest.creatorId() +
+                           ", Amount: " + transactionRequest.amount() +
+                           ", Type: " + transactionRequest.type());
         } else {
             LogService.add("Transaction creation failed. Token: " + transactionRequest.token() +
-                    ", Creator ID: " + transactionRequest.creatorId() +
-                    ", Amount: " + transactionRequest.amount() +
-                    ", Type: " + transactionRequest.type());
+                           ", Creator ID: " + transactionRequest.creatorId() +
+                           ", Amount: " + transactionRequest.amount() +
+                           ", Type: " + transactionRequest.type());
         }
         return result;
     }

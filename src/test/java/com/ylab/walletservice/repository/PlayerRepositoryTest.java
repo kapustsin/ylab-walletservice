@@ -7,6 +7,7 @@ import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -81,7 +82,7 @@ public class PlayerRepositoryTest {
     }
 
     @BeforeEach
-    public void initializeRepository() {
+    public void initializeRepository() throws LiquibaseException, SQLException {
         try (Connection connection = dataSource.getConnection()) {
             connection.createStatement().executeUpdate("CREATE SCHEMA " + SCHEMA_LIQUIBASE);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
@@ -90,8 +91,6 @@ public class PlayerRepositoryTest {
             Liquibase liquibase = new Liquibase(CHANGELOG_PATH, new ClassLoaderResourceAccessor(),
                     database);
             liquibase.update();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

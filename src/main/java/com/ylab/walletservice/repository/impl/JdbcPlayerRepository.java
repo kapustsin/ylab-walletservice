@@ -2,6 +2,7 @@ package com.ylab.walletservice.repository.impl;
 
 import com.ylab.walletservice.domain.Player;
 import com.ylab.walletservice.repository.PlayerRepository;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
+@Repository
 public class JdbcPlayerRepository implements PlayerRepository {
     private final DataSource dataSource;
 

@@ -8,11 +8,24 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
+/**
+ * Interface for mapping TransactionRequestDto objects to Transaction objects.
+ */
 @Mapper
 public interface TransactionMapper {
 
+    /**
+     * Mapper instance for TransactionRequestDto to Transaction conversion.
+     */
     TransactionMapper MAPPER = Mappers.getMapper(TransactionMapper.class);
 
+    /**
+     * Converts a TransactionRequestDto object to a Transaction object, updating the provided Transaction instance.
+     *
+     * @param transactionRequestDto The TransactionRequestDto object to be converted.
+     * @param transaction           The Transaction object to be updated with data from TransactionRequestDto.
+     * @return The updated Transaction object with data from TransactionRequestDto.
+     */
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "token", source = "transactionRequestDto.token"),

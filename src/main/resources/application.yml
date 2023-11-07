@@ -1,15 +1,12 @@
-# Common
-common:
-  url: jdbc:postgresql://localhost:5432/walletservice
-  username: postgres
-  password: "999111"
-
-# JDBC
-jdbc:
-  driver: org.postgresql.Driver
-
-# Liquibase
-liquibase:
-  changeLogFile: db/changelog/changelog.xml
-  defaultSchemaName: walletservice
-  liquibaseSchemaName: liquibase
+spring:
+  # JDBC
+  datasource:
+    url: jdbc:postgresql://localhost:5432/walletservice
+    username: postgres
+    password: "999111"
+    driver-class-name: org.postgresql.Driver
+  # Liquibase
+  liquibase:
+    change-log: db/changelog/changelog.xml
+    default-schema: walletservice
+    liquibase-schema: liquibase
