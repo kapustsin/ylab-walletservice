@@ -104,14 +104,14 @@ public class PlayerRepositoryTest {
     }
 
     @Test
-    @DisplayName("Create player")
+    @DisplayName("It should create a player successfully")
     public void testCreatePlayer() {
         Player player = new Player("testuser1", "password");
         assertTrue(playerRepository.create(player) > 0);
     }
 
     @Test
-    @DisplayName("Get player")
+    @DisplayName("It should retrieve an existing player successfully")
     public void testGetPlayer() {
         Player player = new Player("testuser2", "password");
         long playerId = playerRepository.create(player);
@@ -122,14 +122,14 @@ public class PlayerRepositoryTest {
     }
 
     @Test
-    @DisplayName("Get non-existing player")
+    @DisplayName("It should handle retrieval of a non-existing player")
     public void testGetNonExistingPlayer() {
         Optional<Player> retrievedPlayer = playerRepository.get("nonExistingUser");
         assertFalse(retrievedPlayer.isPresent());
     }
 
     @Test
-    @DisplayName("Update balance")
+    @DisplayName("It should update player's balance successfully")
     public void testUpdateBalance() {
         Player player = new Player("testuser3", "password");
         long playerId = playerRepository.create(player);

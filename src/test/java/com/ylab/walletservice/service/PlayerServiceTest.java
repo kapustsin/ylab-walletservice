@@ -44,7 +44,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Create new user success")
+    @DisplayName("It should create a new user successfully")
     public void testCreateNewUserSuccess() {
         String login = "newUser";
         String password = "password123";
@@ -63,7 +63,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Create existing user")
+    @DisplayName("It should handle creation of an existing user")
     public void testCreateExistingUser() {
         String login = "existingUser";
         String password = "password123";
@@ -77,7 +77,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Authorization success")
+    @DisplayName("It should authorize user successfully with correct credentials")
     public void testDoAuthorizationSuccess() {
         String userLogin = "user123";
         String password = "password123";
@@ -96,7 +96,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Authorization failure")
+    @DisplayName("It should handle authorization failure for non-existing user")
     public void testDoAuthorizationFailure() {
         String nonExistingUserLogin = "nonExistingUser";
         String wrongPassword = "wrongPassword";
@@ -110,7 +110,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Authorization with invalid credentials")
+    @DisplayName("It should handle authorization failure with invalid credentials")
     public void testAuthorizationWithInvalidCredentials() {
         String existingUserLogin = "user123";
         String correctPassword = "correctPassword";
@@ -131,7 +131,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Get balance")
+    @DisplayName("It should retrieve user's balance successfully")
     void testGetBalance() {
         long playerId = 1;
         BigDecimal expectedBalance = new BigDecimal("1000.0");
@@ -145,7 +145,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Get balance for non-existing user")
+    @DisplayName("It should handle retrieval of balance for non-existing user")
     public void testGetBalanceForNonExistingUser() {
         long nonExistingUserId = 999;
 

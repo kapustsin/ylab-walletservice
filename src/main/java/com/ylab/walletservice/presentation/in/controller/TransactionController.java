@@ -7,7 +7,6 @@ import com.ylab.walletservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,13 +42,9 @@ public class TransactionController {
      * @return ResponseEntity containing a list of Transaction objects representing the player's transaction history.
      */
     @Operation(summary = "Get transaction history of the logged-in player.")
-    @GetMapping(value = "/history", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/history")
     public ResponseEntity<List<Transaction>> getHistory(@RequestAttribute LoggedInPlayerDto player) {
-        try {
-            return new ResponseEntity<>(transactionService.getHistory(player.id()), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(transactionService.getHistory(player.id()), HttpStatus.OK);
     }
 
     /**
@@ -60,21 +55,17 @@ public class TransactionController {
      * @return ResponseEntity with a JSON message indicating the transaction creation status.
      */
     @Operation(summary = "Create a new transaction for the logged-in player.")
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/create")
     public ResponseEntity<String> createTransaction(@RequestAttribute LoggedInPlayerDto player, @RequestBody
     TransactionRequestDto transactionRequest) {
-        try {
-            if (Utils.isValid(transactionRequest, player.id())) {
-                if (transactionService.create(transactionRequest)) {
-                    return new ResponseEntity<>("Transaction created successfully!", HttpStatus.CREATED);
-                } else {
-                    return new ResponseEntity<>("Transaction creation failed!", HttpStatus.CONFLICT);
-                }
+        if (Utils.isValid(transactionRequest, player.id())) {
+            if (transactionService.create(transactionRequest)) {
+                return new ResponseEntity<>("Transaction created successfully!", HttpStatus.CREATED);
             } else {
-                return new ResponseEntity<>("Transaction validation error!", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Transaction creation failed!", HttpStatus.CONFLICT);
             }
-        } catch (Exception e) {
-            return new ResponseEntity<>("Internal server error!", HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>("Transaction validation error!", HttpStatus.BAD_REQUEST);
         }
     }
 }

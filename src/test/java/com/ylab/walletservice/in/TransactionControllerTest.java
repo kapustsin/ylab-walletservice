@@ -47,7 +47,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    @DisplayName("Get history-valid player")
+    @DisplayName("It should get history for valid player successfully")
     public void testGetHistoryValidPlayer() throws Exception {
         LoggedInPlayerDto loggedInPlayerDto = new LoggedInPlayerDto(1L, "playerLogin");
         List<Transaction> transactionHistory = Arrays.asList(
@@ -65,21 +65,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    @DisplayName("Get history-exception")
-    public void testGetHistoryException() throws Exception {
-        LoggedInPlayerDto loggedInPlayerDto = new LoggedInPlayerDto(1L, "playerLogin");
-
-        when(transactionServiceMock.getHistory(loggedInPlayerDto.id())).thenThrow(new RuntimeException());
-
-        mockMvc.perform(get("/api/transactions/history")
-                        .requestAttr("player", loggedInPlayerDto))
-                .andExpect(status().isInternalServerError());
-
-        verify(transactionServiceMock, times(1)).getHistory(loggedInPlayerDto.id());
-    }
-
-    @Test
-    @DisplayName("Create transaction-valid data")
+    @DisplayName("It should create transaction with valid data successfully")
     public void testCreateTransactionValidData() throws Exception {
         LoggedInPlayerDto loggedInPlayerDto = new LoggedInPlayerDto(1L, "playerLogin");
         TransactionRequestDto transactionRequestDto =
@@ -98,7 +84,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    @DisplayName("Create transaction-existing data")
+    @DisplayName("It should handle conflict while creating transaction with existing data")
     public void testCreateTransactionExistingData() throws Exception {
         LoggedInPlayerDto loggedInPlayerDto = new LoggedInPlayerDto(1L, "playerLogin");
         TransactionRequestDto transactionRequestDto =
@@ -112,25 +98,6 @@ public class TransactionControllerTest {
                         .content(objectMapper.writeValueAsString(transactionRequestDto)))
                 .andExpect(status().isConflict())
                 .andExpect(content().string("Transaction creation failed!"));
-
-        verify(transactionServiceMock, times(1)).create(transactionRequestDto);
-    }
-
-    @Test
-    @DisplayName("Create transaction-exception")
-    public void testCreateTransactionException() throws Exception {
-        LoggedInPlayerDto loggedInPlayerDto = new LoggedInPlayerDto(1L, "playerLogin");
-        TransactionRequestDto transactionRequestDto =
-                new TransactionRequestDto(123L, loggedInPlayerDto.id(), new BigDecimal("100.00"), "credit");
-
-        when(transactionServiceMock.create(transactionRequestDto)).thenThrow(new RuntimeException());
-
-        mockMvc = MockMvcBuilders.standaloneSetup(transactionController).build();
-        mockMvc.perform(post("/api/transactions/create")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(transactionRequestDto))
-                        .requestAttr("player", loggedInPlayerDto))
-                .andExpect(status().isInternalServerError());
 
         verify(transactionServiceMock, times(1)).create(transactionRequestDto);
     }

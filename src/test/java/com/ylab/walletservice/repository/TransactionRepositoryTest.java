@@ -104,7 +104,7 @@ public class TransactionRepositoryTest {
     }
 
     @Test
-    @DisplayName("Get transaction by ID")
+    @DisplayName("It should retrieve transaction by ID successfully")
     public void testGetTransactionById() {
         Transaction transaction = new Transaction(12345, 1, 100L, BigDecimal.valueOf(50.0), "credit");
         long transactionId = transactionRepository.create(transaction);
@@ -115,7 +115,7 @@ public class TransactionRepositoryTest {
     }
 
     @Test
-    @DisplayName("Get non-existing transaction")
+    @DisplayName("It should handle retrieval of a non-existing transaction")
     public void testGetNonExistingTransaction() {
         long nonExistingTransactionId = 999999L;
         Optional<Transaction> retrievedTransaction = transactionRepository.get(nonExistingTransactionId);
@@ -123,7 +123,7 @@ public class TransactionRepositoryTest {
     }
 
     @Test
-    @DisplayName("Create transaction")
+    @DisplayName("It should create transaction successfully")
     public void testCreateTransaction() {
         Transaction transaction = new Transaction(12345, 1, 100L, BigDecimal.valueOf(50.0), "credit");
         long transactionId = transactionRepository.create(transaction);
@@ -131,7 +131,7 @@ public class TransactionRepositoryTest {
     }
 
     @Test
-    @DisplayName("Check unique transaction token")
+    @DisplayName("It should check uniqueness of transaction token")
     public void testIsTransactionTokenUnique() {
         long uniqueToken = 9999999L;
         assertTrue(transactionRepository.isTransactionTokenUnique(uniqueToken));
@@ -143,7 +143,7 @@ public class TransactionRepositoryTest {
     }
 
     @Test
-    @DisplayName("Check non-unique transaction token")
+    @DisplayName("It should handle non-uniqueness of transaction token")
     public void testIsTransactionTokenNotUnique() {
         long nonUniqueToken = 345L;
 
@@ -157,7 +157,7 @@ public class TransactionRepositoryTest {
     }
 
     @Test
-    @DisplayName("Get transaction history")
+    @DisplayName("It should retrieve transaction history for player")
     public void testGetTransactionHistory() {
         long playerId = 8L;
         Transaction transaction1 = new Transaction(111, playerId, 8L, BigDecimal.valueOf(50.0), "credit");
@@ -171,7 +171,7 @@ public class TransactionRepositoryTest {
     }
 
     @Test
-    @DisplayName("Get transaction history for player without transactions")
+    @DisplayName("It should handle retrieval of transaction history for player without transactions")
     public void testGetTransactionHistoryForPlayerWithoutTransactions() {
         long playerId = 9L;
 

@@ -49,9 +49,7 @@ public class LiquibaseMigration {
      */
     @PostConstruct
     private void initDb() {
-        final String SQL_CREATE_SCHEMA = """
-                CREATE SCHEMA IF NOT EXISTS
-                """ + liquibaseSchemaName;
+        final String SQL_CREATE_SCHEMA = "CREATE SCHEMA IF NOT EXISTS " + liquibaseSchemaName;
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()
         ) {
