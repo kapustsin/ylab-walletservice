@@ -33,7 +33,7 @@ public class LoggerAspect {
         if (player instanceof Optional && ((Optional<?>) player).isPresent()) {
             LogService.add("Success authorization.");
         } else {
-            LogService.add("Authorization failed.");
+               LogService.add("Authorization failed.");
         }
         return player;
     }
