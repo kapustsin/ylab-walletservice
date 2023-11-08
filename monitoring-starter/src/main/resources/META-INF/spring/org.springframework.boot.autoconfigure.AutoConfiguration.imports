@@ -1,0 +1,2 @@
+com.ylab.monitoring.audit.configuration.Audit
+com.ylab.monitoring.logging.configuration.AnnotationEnableLogger

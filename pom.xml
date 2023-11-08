@@ -20,7 +20,6 @@
         <testcontainers.version>1.19.1</testcontainers.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jjwt.version>0.12.3</jjwt.version>
-        <aspectj.version>1.9.20.1</aspectj.version>
         <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
     </properties>
 
@@ -37,6 +36,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -46,6 +46,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ylab</groupId>
+            <artifactId>monitoring-starter</artifactId>
+            <version>0.0.15-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -111,12 +117,6 @@
             <artifactId>jjwt-impl</artifactId>
             <version>${jjwt.version}</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
         </dependency>
 
     </dependencies>

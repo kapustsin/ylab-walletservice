@@ -1,6 +1,5 @@
 package com.ylab.walletservice.service;
 
-import com.ylab.walletservice.aop.annotations.Loggable;
 import com.ylab.walletservice.domain.Player;
 import com.ylab.walletservice.domain.dto.CredentialsDto;
 import com.ylab.walletservice.domain.dto.LoggedInPlayerDto;
@@ -15,7 +14,7 @@ import java.util.Optional;
 /**
  * Service class for managing player operations such as registration, authorization, and balance retrieval.
  */
-@Loggable
+//@Loggable
 @Service
 public class PlayerService {
     /**
@@ -82,7 +81,6 @@ public class PlayerService {
      * @throws RuntimeException If there is an error updating the balance in the database.
      */
     void setBalance(long id, BigDecimal balance) {
-        LogService.add("Player with id =  " + id + " update balance.");
         playerRepository.updateBalance(id, balance);
     }
 }

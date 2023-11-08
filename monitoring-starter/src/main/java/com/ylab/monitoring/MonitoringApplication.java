@@ -1,13 +1,13 @@
-package com.ylab.walletservice;
+package com.ylab.monitoring;
 
-import com.ylab.monitoring.logging.annotations.EnableLogger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@EnableLogger
-public class Application {
+public class MonitoringApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(MonitoringApplication.class, args);
     }
+
 }
