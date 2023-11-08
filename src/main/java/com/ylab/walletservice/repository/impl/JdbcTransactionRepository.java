@@ -2,6 +2,7 @@ package com.ylab.walletservice.repository.impl;
 
 import com.ylab.walletservice.domain.Transaction;
 import com.ylab.walletservice.repository.TransactionRepository;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class JdbcTransactionRepository implements TransactionRepository {
     private final DataSource dataSource;
 
@@ -30,9 +32,8 @@ public class JdbcTransactionRepository implements TransactionRepository {
      */
     @Override
     public Optional<Transaction> get(long id) {
-        final String SQL_SELECT_BY_ID = """
-                SELECT id, token, creator_id, amount, type FROM walletservice.transaction WHERE id = ?
-                """;
+        final String SQL_SELECT_BY_ID =
+                "SELECT id, token, creator_id, amount, type FROM walletservice.transaction WHERE id = ?";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {
             statement.setLong(1, id);
@@ -57,9 +58,8 @@ public class JdbcTransactionRepository implements TransactionRepository {
      */
     @Override
     public long create(Transaction transaction) {
-        final String SQL_CREATE = """
-                INSERT INTO walletservice.transaction (token, creator_id, amount, type) VALUES (?, ?, ?, ?)
-                """;
+        final String SQL_CREATE =
+                "INSERT INTO walletservice.transaction (token, creator_id, amount, type) VALUES (?, ?, ?, ?)";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_CREATE,
                      Statement.RETURN_GENERATED_KEYS)) {
@@ -82,9 +82,7 @@ public class JdbcTransactionRepository implements TransactionRepository {
      */
     @Override
     public boolean isTransactionTokenUnique(long token) {
-        final String SQL_SELECT_TOKEN = """
-                SELECT token FROM walletservice.transaction WHERE token = ?
-                """;
+        final String SQL_SELECT_TOKEN = "SELECT token FROM walletservice.transaction WHERE token = ?";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_TOKEN)) {
             statement.setLong(1, token);
@@ -101,9 +99,8 @@ public class JdbcTransactionRepository implements TransactionRepository {
      */
     @Override
     public List<Transaction> getHistory(long playerId) {
-        final String SQL_SELECT_BY_CREATOR_ID = """
-                SELECT id, token, creator_id, amount, type FROM walletservice.transaction WHERE creator_id = ?
-                """;
+        final String SQL_SELECT_BY_CREATOR_ID =
+                "SELECT id, token, creator_id, amount, type FROM walletservice.transaction WHERE creator_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_CREATOR_ID)) {
             statement.setLong(1, playerId);

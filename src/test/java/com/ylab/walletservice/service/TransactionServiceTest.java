@@ -23,7 +23,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-@Disabled
 @DisplayName("Transaction service tests")
 class TransactionServiceTest {
     @Mock
@@ -41,7 +40,7 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("Create debit transaction with valid amount")
+    @DisplayName("It should create debit transaction with valid amount successfully")
     void testCreateDebitTransactionWithValidAmount() {
         TransactionRequestDto requestDto = new TransactionRequestDto(123, 1, BigDecimal.valueOf(50), "debit");
 
@@ -55,7 +54,7 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("Create debit transaction with invalid amount")
+    @DisplayName("It should not create debit transaction with invalid amount")
     void testCreateDebitTransactionWithInvalidAmount() {
         TransactionRequestDto requestDto = new TransactionRequestDto(123, 1, BigDecimal.valueOf(150), "debit");
 
@@ -68,7 +67,7 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("Create credit transaction")
+    @DisplayName("It should create credit transaction successfully")
     void testCreateCreditTransaction() {
         TransactionRequestDto requestDto = new TransactionRequestDto(123, 1, BigDecimal.valueOf(50), "credit");
 
@@ -82,7 +81,7 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("Create transaction with non-unique transaction token")
+    @DisplayName("It should not create transaction with non-unique transaction token")
     void testCreateNonUniqueTransactionToken() {
         TransactionRequestDto requestDto = new TransactionRequestDto(123, 1, BigDecimal.valueOf(50), "credit");
 
@@ -95,7 +94,7 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("Get transaction history")
+    @DisplayName("It should retrieve transaction history successfully")
     void testGetTransactionHistory() {
         long playerId = 1;
         List<Transaction> expectedTransactions = Arrays.asList(

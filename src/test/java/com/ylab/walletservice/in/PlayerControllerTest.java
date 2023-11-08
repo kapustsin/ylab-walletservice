@@ -51,7 +51,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    @DisplayName("Authorisation-valid credentials")
+    @DisplayName("It should authorize player with valid credentials successfully")
     public void testDoAuthorisationValidCredentials() throws Exception {
         CredentialsDto validCredentials = new CredentialsDto("login", "password");
         LoggedInPlayerDto loggedInPlayerDto = new LoggedInPlayerDto(1, "1");
@@ -70,7 +70,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    @DisplayName("Authorisation-invalid credentials")
+    @DisplayName("It should fail authorization for invalid credentials")
     public void testDoAuthorisationInvalidCredentials() throws Exception {
         CredentialsDto invalidCredentials = new CredentialsDto("invalidUsername", "invalidPassword");
 
@@ -87,7 +87,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    @DisplayName("Registration-valid data")
+    @DisplayName("It should register player with valid data successfully")
     public void testDoRegistrationValidData() throws Exception {
         RegistrationDto validRegistrationData = new RegistrationDto("2", "2");
 
@@ -103,7 +103,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    @DisplayName("Registration-existing data")
+    @DisplayName("It should fail registration for existing data")
     public void testDoRegistrationExistingData() throws Exception {
         RegistrationDto invalidRegistrationData = new RegistrationDto("3", "3");
 
@@ -119,7 +119,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    @DisplayName("Get balance")
+    @DisplayName("It should retrieve player's balance successfully")
     public void testGetBalance() throws Exception {
         LoggedInPlayerDto loggedInPlayerDto = new LoggedInPlayerDto(1L, "playerLogin");
         when(playerServiceMock.getBalance(loggedInPlayerDto.id())).thenReturn(new BigDecimal(1000));

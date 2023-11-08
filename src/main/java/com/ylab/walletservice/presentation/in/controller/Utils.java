@@ -17,9 +17,9 @@ public class Utils {
      * @return {@code true} if the credentials are valid, {@code false} otherwise.
      */
     static boolean isValid(CredentialsDto dto) {
-        return  dto != null &&
-                dto.login() != null && !dto.login().trim().isEmpty() &&
-                dto.password() != null && !dto.password().trim().isEmpty();
+        return dto != null &&
+               dto.login() != null && !dto.login().trim().isEmpty() &&
+               dto.password() != null && !dto.password().trim().isEmpty();
     }
 
     /**
@@ -30,8 +30,8 @@ public class Utils {
      */
     static boolean isValid(RegistrationDto dto) {
         return dto != null &&
-                dto.login() != null && !dto.login().trim().isEmpty() &&
-                dto.password() != null && !dto.password().trim().isEmpty();
+               dto.login() != null && !dto.login().trim().isEmpty() &&
+               dto.password() != null && !dto.password().trim().isEmpty();
     }
 
     /**
@@ -43,9 +43,9 @@ public class Utils {
      */
     public static boolean isValid(TransactionRequestDto dto, long playerId) {
         return dto != null && dto.creatorId() == playerId &&
-                dto.token() > 0 &&
-                dto.creatorId() > 0 &&
-                dto.amount() != null && dto.amount().compareTo(BigDecimal.ZERO) > 0 &&
-                dto.type() != null && ("debit".equals(dto.type()) || "credit".equals(dto.type()));
+               dto.token() > 0 &&
+               dto.creatorId() > 0 &&
+               dto.amount() != null && dto.amount().compareTo(BigDecimal.ZERO) > 0 &&
+               dto.type() != null && ("debit".equals(dto.type()) || "credit".equals(dto.type()));
     }
 }

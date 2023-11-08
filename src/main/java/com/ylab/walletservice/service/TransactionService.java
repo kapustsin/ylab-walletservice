@@ -4,6 +4,7 @@ import com.ylab.walletservice.domain.Transaction;
 import com.ylab.walletservice.domain.dto.TransactionRequestDto;
 import com.ylab.walletservice.domain.mapper.TransactionMapper;
 import com.ylab.walletservice.repository.TransactionRepository;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * Service class for managing transaction operations such as creating transactions and retrieving transaction history.
  */
+@Service
 public class TransactionService {
     /**
      * The mapper for converting between TransactionRequestDto and Transaction objects.

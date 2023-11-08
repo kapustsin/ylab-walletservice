@@ -8,7 +8,6 @@ import com.ylab.walletservice.service.utils.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,22 +49,18 @@ public class PlayerController {
      * @return ResponseEntity with a JSON message indicating the authorization status and, if successful, a JWT token.
      */
     @Operation(summary = "Authenticate player and generate JWT token.")
-    @PostMapping(value = "/authorisation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/authorisation")
     public ResponseEntity<String> doAuthorisation(@RequestBody CredentialsDto credentials) {
-        try {
-            if (Utils.isValid(credentials)) {
-                Optional<LoggedInPlayerDto> player = playerService.doAuthorisation(credentials);
-                if (player.isPresent()) {
-                    LoggedInPlayerDto playerDto = player.get();
-                    return new ResponseEntity<>(jwtService.generateToken(playerDto), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>("Authorization failed!", HttpStatus.UNAUTHORIZED);
-                }
+        if (Utils.isValid(credentials)) {
+            Optional<LoggedInPlayerDto> player = playerService.doAuthorisation(credentials);
+            if (player.isPresent()) {
+                LoggedInPlayerDto playerDto = player.get();
+                return new ResponseEntity<>(jwtService.generateToken(playerDto), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Credentials validation error!", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Authorization failed!", HttpStatus.UNAUTHORIZED);
             }
-        } catch (Exception e) {
-            return new ResponseEntity<>("Internal server error!", HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>("Credentials validation error!", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -78,20 +73,16 @@ public class PlayerController {
      * @return ResponseEntity with a JSON message indicating the registration status.
      */
     @Operation(summary = "Register a new player.")
-    @PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/registration")
     public ResponseEntity<String> doRegistration(@RequestBody RegistrationDto registrationData) {
-        try {
-            if (Utils.isValid(registrationData)) {
-                if (playerService.create(registrationData)) {
-                    return new ResponseEntity<>("Success registration!", HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>("Registration failed!", HttpStatus.CONFLICT);
-                }
+        if (Utils.isValid(registrationData)) {
+            if (playerService.create(registrationData)) {
+                return new ResponseEntity<>("Success registration!", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Registration data validation error!", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Registration failed!", HttpStatus.CONFLICT);
             }
-        } catch (Exception e) {
-            return new ResponseEntity<>("Internal server error!", HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>("Registration data validation error!", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -103,12 +94,8 @@ public class PlayerController {
      * @return ResponseEntity with a JSON message containing the player's balance.
      */
     @Operation(summary = "Get player's balance.")
-    @GetMapping(value = "/balance", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/balance")
     public ResponseEntity<String> getBalance(@RequestAttribute LoggedInPlayerDto player) {
-        try {
-            return new ResponseEntity<>("Balance = " + playerService.getBalance(player.id()), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Internal server error!", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>("Balance = " + playerService.getBalance(player.id()), HttpStatus.OK);
     }
 }

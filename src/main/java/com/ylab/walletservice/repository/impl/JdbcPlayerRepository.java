@@ -2,6 +2,7 @@ package com.ylab.walletservice.repository.impl;
 
 import com.ylab.walletservice.domain.Player;
 import com.ylab.walletservice.repository.PlayerRepository;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
+@Repository
 public class JdbcPlayerRepository implements PlayerRepository {
     private final DataSource dataSource;
 
@@ -28,9 +30,7 @@ public class JdbcPlayerRepository implements PlayerRepository {
      */
     @Override
     public long create(Player player) {
-        final String SQL_CREATE = """
-                INSERT INTO walletservice.player (login, password, balance) VALUES (?, ?, 0)
-                """;
+        final String SQL_CREATE = "INSERT INTO walletservice.player (login, password, balance) VALUES (?, ?, 0)";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_CREATE,
                      Statement.RETURN_GENERATED_KEYS)) {
@@ -51,9 +51,8 @@ public class JdbcPlayerRepository implements PlayerRepository {
      */
     @Override
     public Optional<Player> get(String login) {
-        final String SQL_SELECT_BY_LOGIN = """
-                SELECT id, login, password, balance FROM walletservice.player WHERE login = ?
-                """;
+        final String SQL_SELECT_BY_LOGIN =
+                "SELECT id, login, password, balance FROM walletservice.player WHERE login = ?";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_LOGIN)) {
             statement.setString(1, login);
@@ -76,9 +75,7 @@ public class JdbcPlayerRepository implements PlayerRepository {
      */
     @Override
     public BigDecimal getBalance(long playerId) {
-        final String SQL_SELECT_BALANCE_BY_ID = """
-                SELECT balance FROM walletservice.player WHERE id = ?
-                """;
+        final String SQL_SELECT_BALANCE_BY_ID = "SELECT balance FROM walletservice.player WHERE id = ?";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BALANCE_BY_ID)) {
             statement.setLong(1, playerId);
@@ -96,9 +93,7 @@ public class JdbcPlayerRepository implements PlayerRepository {
      */
     @Override
     public void updateBalance(long id, BigDecimal balance) {
-        final String SQL_UPDATE_BALANCE = """
-                UPDATE walletservice.player SET balance = ? WHERE id = ?
-                """;
+        final String SQL_UPDATE_BALANCE = "UPDATE walletservice.player SET balance = ? WHERE id = ?";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_BALANCE)) {
             statement.setBigDecimal(1, balance);

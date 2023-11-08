@@ -1,6 +1,6 @@
 package com.ylab.walletservice.infrastructure.database;
 
-import com.ylab.walletservice.configuration.utils.YamlFactory;
+import jakarta.annotation.PostConstruct;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -8,10 +8,8 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
+import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,19 +18,17 @@ import java.sql.Statement;
 /**
  * Initializing the database schema using Liquibase migrations.
  */
-@PropertySources({
-        @PropertySource(value = "classpath:application.yml", factory = YamlFactory.class)
-})
+@Component
 public class LiquibaseMigration {
     final private DataSource dataSource;
 
-    @Value("${liquibase.changeLogFile}")
+    @Value("${spring.liquibase.change-log}")
     private String changeLogFile;
 
-    @Value("${liquibase.liquibaseSchemaName}")
+    @Value("${spring.liquibase.liquibase-schema}")
     private String liquibaseSchemaName;
 
-    @Value("${liquibase.defaultSchemaName}")
+    @Value("${spring.liquibase.default-schema}")
     private String defaultSchemaName;
 
     /**
@@ -49,9 +45,7 @@ public class LiquibaseMigration {
      */
     @PostConstruct
     private void initDb() {
-        final String SQL_CREATE_SCHEMA = """
-                CREATE SCHEMA IF NOT EXISTS
-                """ + liquibaseSchemaName;
+        final String SQL_CREATE_SCHEMA = "CREATE SCHEMA IF NOT EXISTS " + liquibaseSchemaName;
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()
         ) {

@@ -1,4 +1,4 @@
-package com.ylab.walletservice.service;
+package com.ylab.monitoring.logging.service;
 
 import java.util.ArrayList;
 import java.util.List;
