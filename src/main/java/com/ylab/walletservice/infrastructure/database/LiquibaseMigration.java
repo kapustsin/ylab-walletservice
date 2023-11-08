@@ -8,6 +8,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -17,6 +18,7 @@ import java.sql.Statement;
 /**
  * Initializing the database schema using Liquibase migrations.
  */
+@Component
 public class LiquibaseMigration {
     final private DataSource dataSource;
 

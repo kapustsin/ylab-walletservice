@@ -1,10 +1,8 @@
 spring:
-  # JDBC
   datasource:
-    url: jdbc:postgresql://localhost:5432/walletservice
-    username: postgres
-    password: "999111"
-  # Liquibase
+    url: ${TEST_CONTAINER_URL}
+    username: ${TEST_CONTAINER_USERNAME}
+    password: ${TEST_CONTAINER_PASSWORD}
   liquibase:
     change-log: db/changelog/changelog.xml
     default-schema: walletservice
